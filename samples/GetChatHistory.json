@@ -1,0 +1,51 @@
+{
+    "_": "messages",
+    "total_count": 1,
+    "messages": [
+      {
+        "_": "message",
+        "id": 142683930624,
+        "sender_id": {
+          "_": "messageSenderUser",
+          "user_id": 59250686
+        },
+        "chat_id": -1001669191797,
+        "is_outgoing": false,
+        "is_pinned": false,
+        "can_be_edited": false,
+        "can_be_forwarded": true,
+        "can_be_saved": true,
+        "can_be_deleted_only_for_self": false,
+        "can_be_deleted_for_all_users": false,
+        "can_get_added_reactions": false,
+        "can_get_statistics": false,
+        "can_get_message_thread": true,
+        "can_get_viewers": false,
+        "can_get_media_timestamp_links": true,
+        "can_report_reactions": false,
+        "has_timestamped_media": false,
+        "is_channel_post": false,
+        "contains_unread_mention": false,
+        "date": 1666939063,
+        "edit_date": 0,
+        "unread_reactions": [],
+        "reply_in_chat_id": -1001669191797,
+        "reply_to_message_id": 142682882048,
+        "message_thread_id": 142682882048,
+        "ttl": 0,
+        "ttl_expires_in": 0,
+        "via_bot_user_id": 0,
+        "author_signature": "",
+        "media_album_id": "0",
+        "restriction_reason": "",
+        "content": {
+          "_": "messageText",
+          "text": {
+            "_": "formattedText",
+            "text": "+ актуально",
+            "entities": []
+          }
+        }
+      }
+    ]
+  }

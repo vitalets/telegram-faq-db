@@ -1,0 +1,41 @@
+{
+  "name": "telegram-faq-db",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "up": "docker compose up -d",
+    "down": "docker compose down",
+    "sh": "docker compose exec app sh",
+    "url": "echo http://$(docker compose port app 3000 | sed s/0.0.0.0/localhost/)",
+    "logs": "docker compose logs -f app",
+    "check": "ts-node-esm src/check.ts",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "build:docker": "npm run build && docker build . --platform amd64 -t cr.yandex/crp1c0nf1r638orpn1a6/telegram-faq-db",
+    "build:tdlib": "docker build . -f Dockerfile.tdlib --platform amd64 -t node16-alpine-tdlib",
+    "push:docker": "docker push cr.yandex/crp1c0nf1r638orpn1a6/telegram-faq-db",
+    "deploy": "npm run build && deploy-fn"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.202.0",
+    "express": "^4.18.2",
+    "prebuilt-tdlib": "^0.1008000.0",
+    "tdl": "^7.2.0",
+    "tdl-tdlib-addon": "^1.2.1",
+    "yandex-cloud-fn": "^2.5.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.14",
+    "@types/node": "^18.11.7",
+    "@typescript-eslint/eslint-plugin": "^5.28.0",
+    "@typescript-eslint/parser": "^5.28.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.17.0",
+    "lint-staged": "^13.0.1",
+    "nodemon": "^2.0.20",
+    "tdlib-types": "^0.1001008.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4",
+    "yandex-cloud-deploy-fn": "^2.0.0"
+  }
+}
