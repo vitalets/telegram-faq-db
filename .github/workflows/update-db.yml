@@ -12,3 +12,7 @@ jobs:
         node-version: 16
     - run: npm ci
     - run: npm run check
+      env:
+        TELEGRAM_APP_ID: ${{ secrets.TELEGRAM_APP_ID }}
+        TELEGRAM_APP_HASH: ${{ secrets.TELEGRAM_APP_HASH }}
+        TELEGRAM_PHONE: ${{ secrets.TELEGRAM_PHONE }}
