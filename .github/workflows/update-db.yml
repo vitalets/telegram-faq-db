@@ -16,3 +16,5 @@ jobs:
         TELEGRAM_APP_ID: ${{ secrets.TELEGRAM_APP_ID }}
         TELEGRAM_APP_HASH: ${{ secrets.TELEGRAM_APP_HASH }}
         TELEGRAM_PHONE: ${{ secrets.TELEGRAM_PHONE }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
