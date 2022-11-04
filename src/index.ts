@@ -7,14 +7,14 @@ import { Client } from 'tdl';
 import { TDLib } from 'tdl-tdlib-addon';
 import { getTdjson } from 'prebuilt-tdlib';
 import type { messageText } from 'tdlib-types';
-import { AuthCode } from './authCode.js'
+import { getAuthCode } from './authCode.js'
 
 const tdlibPath = process.platform === 'linux'
   ? getTdjson()
   // ? './libtdjson/libtdjson.so.1.8.7'
   : '../td/tdlib/lib/libtdjson.dylib'; // local development
 
-const dbPath = './tmp';
+const dbPath = 'tmp';
 
 // chatid: -1001669191797
 
@@ -42,7 +42,7 @@ export class TgClient {
     await this.client.login(() => {
       return {
         getPhoneNumber: async () => process.env.TELEGRAM_PHONE || '',
-        getAuthCode: async () => new AuthCode().getCode(),
+        getAuthCode: async () => getAuthCode(),
       };
     });
   }
@@ -52,13 +52,15 @@ export class TgClient {
   }
 
   async getChatHistory(chatId: number, count: number) {
-    // load chats first to avoid "Chat not found" error
-    const chats = await this.client.invoke({
-        _: 'getChats',
-        chat_list: { _: 'chatListMain' },
-        limit: 4000
-      });
-    console.log(chats);
+    // open chats to load latest messages and avoid "Chat not found" error
+    const r = await this.client.invoke({
+      _: 'openChat',
+      chat_id: chatId
+    });
+    console.log(r);
+
+    // here delay is important to load latest messages
+    await new Promise(r => setTimeout(r, 1000))
 
     const res: MyMessage[] = [];
     let fromMessageId = 0;

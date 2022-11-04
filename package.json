@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.202.0",
+    "fast-glob": "^3.2.12",
+    "mime": "^3.0.0",
     "prebuilt-tdlib": "^0.1008000.0",
     "tdl": "^7.2.0",
     "tdl-tdlib-addon": "^1.2.1",
