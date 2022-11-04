@@ -52,7 +52,15 @@ export class TgClient {
   }
 
   async getChatHistory(chatId: number, count: number) {
-    // open chats to load latest messages and avoid "Chat not found" error
+     // avoid "Chat not found" error
+    const chats = await this.client.invoke({
+        _: 'getChats',
+        chat_list: { _: 'chatListMain' },
+        limit: 4000
+      });
+    console.log(chats);
+
+    // open chats to load latest messages
     const r = await this.client.invoke({
       _: 'openChat',
       chat_id: chatId
