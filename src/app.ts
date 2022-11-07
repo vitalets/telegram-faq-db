@@ -6,7 +6,7 @@ import { NoAnswerDigest, isQuestionWithoutAnswer } from './digest.js';
 
 const SOURCE_CHAT_ID = Number(process.env.SOURCE_CHAT_ID);
 const DIGEST_CHAT_ID = Number(process.env.DIGEST_CHAT_ID);
-const minutesOffset = { since: -60 * 2, to: -30 };
+const minutesOffset = { since: -60 * 2, to: -10 };
 
 export class App {
   logger = logger.withPrefix(`[${this.constructor.name}]:`);
@@ -27,6 +27,7 @@ export class App {
 
   async handleMessages() {
     const questions = await this.loadQuestions();
+    if (!questions.length) return;
     const links = await this.loadLinks(questions);
     const text = new NoAnswerDigest(questions, links).buildText();
     await this.tg.sendMessage(DIGEST_CHAT_ID, text);
