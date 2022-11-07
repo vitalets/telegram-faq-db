@@ -36,12 +36,15 @@ export class App {
 
   async loadQuestions() {
     const { since, to } = this.getMessagesDateRange();
-    this.logger.log(`Loading messages in range: ${new Date(since * 1000)} - ${new Date(to * 1000)}`);
+    this.logger.log(`Loading messages since: ${new Date(since * 1000)}`);
     const messages = await this.tg.loadMessages(SOURCE_CHAT_ID, since);
+    this.logger.log(`Loaded messages: ${messages.length}`);
+    // @ts-ignore
+    this.logger.log(`Last message: ${messages[0].content.text.text}`);
     const questions = messages
       .filter(m => m.date < to)
       .filter(m => isQuestionWithoutAnswer(m));
-    this.logger.log(`Found ${questions.length} question(s) from ${messages.length} message(s)`);
+    this.logger.log(`Found questions: ${questions.length}`);
     return questions;
   }
 
