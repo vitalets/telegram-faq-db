@@ -6,7 +6,7 @@ import { NoAnswerDigest, isQuestionWithoutAnswer } from './digest.js';
 
 const SOURCE_CHAT_ID = Number(process.env.SOURCE_CHAT_ID);
 const DIGEST_CHAT_ID = Number(process.env.DIGEST_CHAT_ID);
-const minutesOffset = { since: -60 * 2, to: -10 };
+const minutesOffset = { since: -60 * 1, to: -1 };
 
 export class App {
   logger = logger.withPrefix(`[${this.constructor.name}]:`);
