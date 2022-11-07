@@ -22,7 +22,7 @@ jobs:
       with:
         node-version: 16
     - run: npm ci
-    - run: npm run app
+    - run: npm run send-digest
       env:
         TELEGRAM_APP_ID: ${{ secrets.TELEGRAM_APP_ID }}
         TELEGRAM_APP_HASH: ${{ secrets.TELEGRAM_APP_HASH }}

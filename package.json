@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "check": "ts-node-esm scripts/check.ts",
-    "start": "ts-node-esm src/index.ts",
+    "send-digest": "ts-node-esm src/index.ts",
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "deploy": "npm run build && deploy-fn"
   },
