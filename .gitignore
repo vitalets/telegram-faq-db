@@ -11,3 +11,4 @@ npm-debug.log
 dist
 tmp
 libtdjson
+scripts/check.ts

@@ -1,0 +1,67 @@
+{
+  "_": "messageLinkInfo",
+  "is_public": false,
+  "chat_id": -1001669191797,
+  "message": {
+    "_": "message",
+    "id": 145067343872,
+    "sender_id": {
+      "_": "messageSenderUser",
+      "user_id": 283048958
+    },
+    "chat_id": -1001669191797,
+    "is_outgoing": false,
+    "is_pinned": false,
+    "can_be_edited": false,
+    "can_be_forwarded": true,
+    "can_be_saved": true,
+    "can_be_deleted_only_for_self": false,
+    "can_be_deleted_for_all_users": false,
+    "can_get_added_reactions": false,
+    "can_get_statistics": false,
+    "can_get_message_thread": true,
+    "can_get_viewers": false,
+    "can_get_media_timestamp_links": true,
+    "can_report_reactions": false,
+    "has_timestamped_media": true,
+    "is_channel_post": false,
+    "contains_unread_mention": false,
+    "date": 1667814597,
+    "edit_date": 0,
+    "interaction_info": {
+      "_": "messageInteractionInfo",
+      "view_count": 0,
+      "forward_count": 0,
+      "reply_info": {
+        "_": "messageReplyInfo",
+        "reply_count": 0,
+        "recent_replier_ids": [],
+        "last_read_inbox_message_id": 0,
+        "last_read_outbox_message_id": 0,
+        "last_message_id": 0
+      },
+      "reactions": []
+    },
+    "unread_reactions": [],
+    "reply_in_chat_id": 0,
+    "reply_to_message_id": 0,
+    "message_thread_id": 145067343872,
+    "ttl": 0,
+    "ttl_expires_in": 0,
+    "via_bot_user_id": 0,
+    "author_signature": "",
+    "media_album_id": "0",
+    "restriction_reason": "",
+    "content": {
+      "_": "messageText",
+      "text": {
+        "_": "formattedText",
+        "text": "Спасибо!🙏",
+        "entities": []
+      }
+    }
+  },
+  "media_timestamp": 0,
+  "for_album": false,
+  "for_comment": false
+}

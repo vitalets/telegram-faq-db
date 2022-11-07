@@ -7,6 +7,7 @@ import { finished } from 'node:stream/promises';
 import fs from 'node:fs';
 import mime from 'mime';
 import fg from 'fast-glob';
+import { logger } from './logger.js';
 import {
   S3Client,
   ListObjectsV2Command,
@@ -15,6 +16,7 @@ import {
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
 
+
 // todo: create separate service account
 const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env;
 
@@ -22,6 +24,7 @@ const REGION = 'ru-central1';
 const ENDPOINT = 'https://storage.yandexcloud.net';
 
 export class S3 {
+  protected logger = logger.withPrefix(`[${this.constructor.name}]:`);
   client: S3Client;
 
   constructor(protected bucket: string) {
@@ -59,7 +62,7 @@ export class S3 {
 
   async uploadFile(file: string, key: string) {
     const ContentType = mime.getType(file) || 'application/octet-stream';
-    console.log(`Uploading: ${file} -> ${key} (${ContentType})`);
+    this.logger.log(`Uploading: ${file} -> ${key} (${ContentType})`);
     const command = new PutObjectCommand({
       Bucket: this.bucket,
       Key: key,
@@ -71,7 +74,7 @@ export class S3 {
   }
 
   async downloadFile(key: string, file: string) {
-    console.log(`Downoading: ${key} -> ${file}`);
+    this.logger.log(`Downoading: ${key} -> ${file}`);
     const command = new GetObjectCommand({
       Bucket: this.bucket,
       Key: key,
@@ -92,7 +95,7 @@ export class S3 {
       const key = `${prefix}/${path.relative(dir, file)}`;
       await this.uploadFile(file, key);
     }
-    console.log(`Upload dir complete.`);
+    this.logger.log(`Upload dir complete.`);
   }
 
   async downloadDir(prefix: string, dir: string) {
@@ -101,6 +104,6 @@ export class S3 {
       const file = path.join(dir, path.relative(prefix, key));
       await this.downloadFile(key, file);
     }
-    console.log(`Download dir complete.`);
+    this.logger.log(`Download dir complete.`);
   }
 }

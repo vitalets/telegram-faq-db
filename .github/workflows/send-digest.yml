@@ -1,9 +1,20 @@
-name: load new messages to db
+name: send digest
 
-on: [push]
+on:
+  schedule:
+    # run every 10 minutes for test
+    - cron:  '*/10 * * * *'
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      digestChatId:
+        required: true
+        type: number
 
 jobs:
-  update-db:
+  send-digest:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v3
@@ -11,10 +22,12 @@ jobs:
       with:
         node-version: 16
     - run: npm ci
-    - run: npm run check
+    - run: npm run app
       env:
         TELEGRAM_APP_ID: ${{ secrets.TELEGRAM_APP_ID }}
         TELEGRAM_APP_HASH: ${{ secrets.TELEGRAM_APP_HASH }}
         TELEGRAM_PHONE: ${{ secrets.TELEGRAM_PHONE }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        SOURCE_CHAT_ID: ${{ secrets.SOURCE_CHAT_ID }}
+        DIGEST_CHAT_ID: ${{ secrets.DIGEST_CHAT_ID }}

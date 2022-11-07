@@ -42,8 +42,34 @@
           "_": "messageText",
           "text": {
             "_": "formattedText",
-            "text": "+ актуально",
-            "entities": []
+            "text": "тест форматированного текста и ссылки",
+            "entities": [
+              {
+                "_": "textEntity",
+                "offset": 5,
+                "length": 16,
+                "type": {
+                  "_": "textEntityTypeBold"
+                }
+              },
+              {
+                "_": "textEntity",
+                "offset": 22,
+                "length": 6,
+                "type": {
+                  "_": "textEntityTypeStrikethrough"
+                }
+              },
+              {
+                "_": "textEntity",
+                "offset": 31,
+                "length": 6,
+                "type": {
+                  "_": "textEntityTypeTextUrl",
+                  "url": "https://t.me/c/1669191797/138174"
+                }
+              }
+            ]
           }
         }
       }

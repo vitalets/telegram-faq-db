@@ -4,20 +4,14 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "up": "docker compose up -d",
-    "down": "docker compose down",
-    "sh": "docker compose exec app sh",
-    "url": "echo http://$(docker compose port app 3000 | sed s/0.0.0.0/localhost/)",
-    "logs": "docker compose logs -f app",
-    "check": "ts-node-esm src/check.ts",
+    "check": "ts-node-esm scripts/check.ts",
+    "start": "ts-node-esm src/index.ts",
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
-    "build:docker": "npm run build && docker build . --platform amd64 -t cr.yandex/crp1c0nf1r638orpn1a6/telegram-faq-db",
-    "build:tdlib": "docker build . -f Dockerfile.tdlib --platform amd64 -t node16-alpine-tdlib",
-    "push:docker": "docker push cr.yandex/crp1c0nf1r638orpn1a6/telegram-faq-db",
     "deploy": "npm run build && deploy-fn"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.202.0",
+    "@vitalets/logger": "^2.1.1",
     "fast-glob": "^3.2.12",
     "mime": "^3.0.0",
     "prebuilt-tdlib": "^0.1008000.0",

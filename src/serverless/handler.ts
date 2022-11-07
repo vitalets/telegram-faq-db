@@ -2,20 +2,20 @@
  * Запуск из серверлесс функции.
  */
 import { Handler, TimerMessage, fixConsoleForLogging } from 'yandex-cloud-fn';
-import { TgClient } from '../index.js';
+import { Tg } from '../tg.js';
 
 fixConsoleForLogging();
 
 export const handler: Handler<TimerMessage> = async event => {
 
-  const client = new TgClient();
+  const tg = new Tg();
 
   try {
     console.log('logging in...');
-    await client.login();
+    await tg.login();
     console.log('logged in');
   } finally {
-    await client.close();
+    await tg.close();
   }
 };
 
