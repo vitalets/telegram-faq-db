@@ -2,6 +2,7 @@
  * Reads auth code from s3 bucket folder name
  */
 import { config } from './config.js';
+import { logger } from './logger.js';
 import { S3 } from './s3.js';
 
 const prefix = 'code';
@@ -15,7 +16,7 @@ export async function getAuthCode() {
     if (keys.length) {
       const key = keys[0].replace(/\D/g, '');
       console.log(`Got auth key: ${key}`);
-      s3.deleteKeys(keys).catch(e => console.log(e));
+      s3.deleteKeys(keys).catch(e => logger.error(e));
       return key;
     }
     await new Promise(r => setTimeout(r, 1000));

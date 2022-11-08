@@ -1,9 +1,15 @@
 import { Tg } from './tg.js';
 import { S3 } from './s3.js';
 import { logger } from './logger.js';
-import { message } from 'tdlib-types';
+import { message, messageText } from 'tdlib-types';
 import { NoAnswerDigest, isNoAnswerMessage } from './noAnswerDigest.js';
 import { config } from './config.js';
+import { ChatConfig, chats } from './configChats.js';
+
+type TimeRange = {
+  since: number;
+  to: number;
+}
 
 export class App {
   logger = logger.withPrefix(`[${this.constructor.name}]:`);
@@ -15,34 +21,49 @@ export class App {
     this.tg = new Tg();
     try {
       await this.tg.login();
-      await this.handleNewMessages();
+      await this.tg.waitForReady();
+      await this.handleNoAnswerMessages();
     } finally {
       await this.tg.close();
       await this.uploadDb();
     }
   }
 
-  async handleNewMessages() {
+  async handleNoAnswerMessages() {
     const messages = await this.loadNoAnswerMessages();
     if (!messages.length) return;
     const links = await this.loadLinks(messages);
     const text = new NoAnswerDigest(messages, links).buildText();
-    await this.tg.sendMessage(config.digestChatId, text);
-    this.logger.log(`Digest sent.`);
+    !config.dryRun && await this.tg.sendMessage(config.digestChatId, text);
+    this.logger.log(`Digest sent.${config.dryRun ? ' (dry run)' : ''}`);
   }
 
   async loadNoAnswerMessages() {
-    const { since, to } = this.getMessagesTimeRange();
-    this.logger.log(`Loading messages since: ${new Date(since * 1000)}`);
-    const messages = await this.tg.loadMessages(config.sourceChatId, since);
-    this.logger.log(`Loaded messages: ${messages.length}`);
-    // @ts-ignore
-    this.logger.log(`Last message: ${messages[0].content.text.text}`);
-    const naMessages = messages
-      .filter(m => m.date < to)
-      .filter(m => isNoAnswerMessage(m));
-    this.logger.log(`No answer messages: ${naMessages.length}`);
-    return naMessages;
+    const timeRange = this.getMessagesTimeRange();
+    const totalMessages: message[] = [];
+    for (const chatConfig of chats) {
+      const messages = await this.loadNoAnswerMessagesForChat(chatConfig, timeRange);
+      totalMessages.push(...messages);
+    }
+    this.logger.log(`Total no answer messages: ${totalMessages.length}`);
+    return totalMessages;
+  }
+
+  protected async loadNoAnswerMessagesForChat(chat: ChatConfig, { since, to }: TimeRange) {
+    this.logger.log(`Loading messages for: ${chat.name}`);
+    const messages = await this.tg.loadMessages(chat.id, since);
+    const rangeMessages = messages.filter(m => m.date < to);
+    const noAnswerMessages = rangeMessages.filter(m => isNoAnswerMessage(m));
+    this.logger.log([
+      `Loaded messages: ${messages.length},`,
+      `in time range: ${rangeMessages.length},`,
+      `no answer: ${noAnswerMessages.length}`
+    ].join(' '));
+    if (messages.length) {
+      const { text } = messages[0].content as messageText;
+      this.logger.log(`Last message: ${text.text.slice(0, 50)}...`);
+    }
+    return noAnswerMessages;
   }
 
   async loadLinks(questions: message[]) {

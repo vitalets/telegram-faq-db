@@ -129,6 +129,12 @@ export class Tg {
     });
   }
 
+  async waitForReady() {
+    await this.waitForEvent(u => {
+      return u._ === 'updateConnectionState' && u.state._ === 'connectionStateReady'
+    });
+  }
+
   async getMesssageLink(chatId: number, messageId: number) {
     const { link } = await this.client.invoke({
       _: 'getMessageLink',
