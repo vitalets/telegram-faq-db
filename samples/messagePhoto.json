@@ -1,0 +1,173 @@
+{
+  "_": "message",
+  "id": 194677571584,
+  "sender_id": {
+    "_": "messageSenderUser",
+    "user_id": 64519274
+  },
+  "chat_id": -1001426091267,
+  "is_outgoing": false,
+  "is_pinned": false,
+  "can_be_edited": false,
+  "can_be_forwarded": true,
+  "can_be_saved": true,
+  "can_be_deleted_only_for_self": false,
+  "can_be_deleted_for_all_users": false,
+  "can_get_added_reactions": false,
+  "can_get_statistics": false,
+  "can_get_message_thread": true,
+  "can_get_viewers": false,
+  "can_get_media_timestamp_links": true,
+  "can_report_reactions": false,
+  "has_timestamped_media": true,
+  "is_channel_post": false,
+  "contains_unread_mention": false,
+  "date": 1667903237,
+  "edit_date": 0,
+  "interaction_info": {
+    "_": "messageInteractionInfo",
+    "view_count": 0,
+    "forward_count": 0,
+    "reply_info": {
+      "_": "messageReplyInfo",
+      "reply_count": 0,
+      "recent_replier_ids": [],
+      "last_read_inbox_message_id": 0,
+      "last_read_outbox_message_id": 0,
+      "last_message_id": 0
+    },
+    "reactions": []
+  },
+  "unread_reactions": [],
+  "reply_in_chat_id": 0,
+  "reply_to_message_id": 0,
+  "message_thread_id": 194677571584,
+  "ttl": 0,
+  "ttl_expires_in": 0,
+  "via_bot_user_id": 0,
+  "author_signature": "",
+  "media_album_id": "0",
+  "restriction_reason": "",
+  "content": {
+    "_": "messagePhoto",
+    "photo": {
+      "_": "photo",
+      "has_stickers": false,
+      "minithumbnail": {
+        "_": "minithumbnail",
+        "width": 30,
+        "height": 40,
+        "data": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wAARCAAoAB4DASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwC2TTaCeKaTUM0FozTc0ZzSCwE496jMjEc8D05pSeKTNS1cqMrDd47AU9WyDx37VGQhPIH5UoIHTiiMbBKdxzUwmiiqJIi3NAY0UUxH/9k="
+      },
+      "sizes": [
+        {
+          "_": "photoSize",
+          "type": "m",
+          "photo": {
+            "_": "file",
+            "id": 926,
+            "size": 13650,
+            "expected_size": 13650,
+            "local": {
+              "_": "localFile",
+              "path": "",
+              "can_be_downloaded": true,
+              "can_be_deleted": false,
+              "is_downloading_active": false,
+              "is_downloading_completed": false,
+              "download_offset": 0,
+              "downloaded_prefix_size": 0,
+              "downloaded_size": 0
+            },
+            "remote": {
+              "_": "remoteFile",
+              "id": "AgACAgIAAx0CVQABbQMAAQLVO2NqL4GBU3HCkf8aRkmd1pw7JFSXAAL4vTEbj0hRS8V1qkdm4EwEAQADAgADbQADKgQ",
+              "unique_id": "AQAD-L0xG49IUUty",
+              "is_uploading_active": false,
+              "is_uploading_completed": true,
+              "uploaded_size": 13650
+            }
+          },
+          "width": 240,
+          "height": 320,
+          "progressive_sizes": []
+        },
+        {
+          "_": "photoSize",
+          "type": "x",
+          "photo": {
+            "_": "file",
+            "id": 927,
+            "size": 59933,
+            "expected_size": 59933,
+            "local": {
+              "_": "localFile",
+              "path": "",
+              "can_be_downloaded": true,
+              "can_be_deleted": false,
+              "is_downloading_active": false,
+              "is_downloading_completed": false,
+              "download_offset": 0,
+              "downloaded_prefix_size": 0,
+              "downloaded_size": 0
+            },
+            "remote": {
+              "_": "remoteFile",
+              "id": "AgACAgIAAx0CVQABbQMAAQLVO2NqL4GBU3HCkf8aRkmd1pw7JFSXAAL4vTEbj0hRS8V1qkdm4EwEAQADAgADeAADKgQ",
+              "unique_id": "AQAD-L0xG49IUUt9",
+              "is_uploading_active": false,
+              "is_uploading_completed": true,
+              "uploaded_size": 59933
+            }
+          },
+          "width": 600,
+          "height": 800,
+          "progressive_sizes": []
+        },
+        {
+          "_": "photoSize",
+          "type": "y",
+          "photo": {
+            "_": "file",
+            "id": 928,
+            "size": 71723,
+            "expected_size": 71723,
+            "local": {
+              "_": "localFile",
+              "path": "",
+              "can_be_downloaded": true,
+              "can_be_deleted": false,
+              "is_downloading_active": false,
+              "is_downloading_completed": false,
+              "download_offset": 0,
+              "downloaded_prefix_size": 0,
+              "downloaded_size": 0
+            },
+            "remote": {
+              "_": "remoteFile",
+              "id": "AgACAgIAAx0CVQABbQMAAQLVO2NqL4GBU3HCkf8aRkmd1pw7JFSXAAL4vTEbj0hRS8V1qkdm4EwEAQADAgADeQADKgQ",
+              "unique_id": "AQAD-L0xG49IUUt-",
+              "is_uploading_active": false,
+              "is_uploading_completed": true,
+              "uploaded_size": 71723
+            }
+          },
+          "width": 960,
+          "height": 1280,
+          "progressive_sizes": [
+            10124,
+            18367,
+            21849,
+            33574
+          ]
+        }
+      ]
+    },
+    "caption": {
+      "_": "formattedText",
+      "text": "Скажите, пожалуйста, что эта бумажка означает. Приклеили к двери подъезда, с моим именем",
+      "entities": []
+    },
+    "is_secret": false
+  }
+}

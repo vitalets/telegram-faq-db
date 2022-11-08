@@ -5,6 +5,7 @@ import { message, messageText } from 'tdlib-types';
 import { NoAnswerDigest, isNoAnswerMessage } from './noAnswerDigest.js';
 import { config } from './config.js';
 import { ChatConfig, chats } from './configChats.js';
+import { cutStr, removeNewLines } from './utils.js';
 
 type TimeRange = {
   since: number;
@@ -38,6 +39,14 @@ export class App {
     this.logger.log(`Digest sent.${config.dryRun ? ' (dry run)' : ''}`);
   }
 
+  async updateNoAnswerDigest() {
+    // load messages from digest channel
+    // create instances, extract links
+    // check link info
+    // update info in digest
+    // build text and edit message
+  }
+
   async loadNoAnswerMessages() {
     const timeRange = this.getMessagesTimeRange();
     const totalMessages: message[] = [];
@@ -46,7 +55,7 @@ export class App {
       totalMessages.push(...messages);
     }
     this.logger.log(`Total no answer messages: ${totalMessages.length}`);
-    return totalMessages;
+    return totalMessages.slice(0, config.noAnswerMaxCount);
   }
 
   protected async loadNoAnswerMessagesForChat(chat: ChatConfig, { since, to }: TimeRange) {
@@ -60,8 +69,9 @@ export class App {
       `no answer: ${noAnswerMessages.length}`
     ].join(' '));
     if (messages.length) {
-      const { text } = messages[0].content as messageText;
-      this.logger.log(`Last message: ${text.text.slice(0, 50)}...`);
+      const { content } = messages[0];
+      const text = content._ === 'messageText' ? content.text.text : content._;
+      this.logger.log(`Last message: ${cutStr(removeNewLines(text), 50)}`);
     }
     return noAnswerMessages;
   }

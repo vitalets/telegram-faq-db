@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "check": "ts-node-esm scripts/check.ts",
+    "check:d": "LOG_LEVEL=debug npm run check",
     "send-digest": "ts-node-esm src/index.ts"
   },
   "dependencies": {

@@ -12,19 +12,24 @@ export type ChatConfig = {
 }
 
 export const chats: ChatConfig[] = [
+  // {
+  //   id: -1001669191797,
+  //   name: 'Переезд в Армению | Взаимопомощь',
+  //   link: 'https://t.me/+szFNNJqf1J42Zjhi',
+  // },
+  // {
+  //   id: -1001719695860,
+  //   name: 'Армения — релокация, ВНЖ, переезд. Чат TravelAsk',
+  //   link: 'https://t.me/+9ZZG-ojnofE5Mjdi',
+  // },
+  // {
+  //   id: -1001426091267,
+  //   name: 'Ереван 🇦🇲 Чат TravelAsk',
+  //   link: 'https://t.me/+9HMo1MGt1Jc3N2Yy',
+  // },
   {
-    id: -1001669191797,
-    name: 'Переезд в Армению | Взаимопомощь',
-    link: 'https://t.me/+szFNNJqf1J42Zjhi',
-  },
-  {
-    id: -1001719695860,
-    name: 'Армения — релокация, ВНЖ, переезд. Чат TravelAsk',
-    link: 'https://t.me/+9ZZG-ojnofE5Mjdi',
-  },
-  {
-    id: -1001724913396,
-    name: 'Ереван 🇦🇲 Чат TravelAsk',
-    link: 'https://t.me/+9HMo1MGt1Jc3N2Yy',
-  },
+    id: -1001698392658,
+    name: 'Банки в Армении',
+    link: 'https://t.me/+s2_G3BHv0E4xNjNi',
+  }
 ];

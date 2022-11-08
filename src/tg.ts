@@ -7,7 +7,7 @@ import { Client } from 'tdl';
 import { TDLib } from 'tdl-tdlib-addon';
 import { getTdjson } from 'prebuilt-tdlib';
 import timers from 'timers/promises';
-import type { messageText, message, Update, updateMessageSendSucceeded } from 'tdlib-types';
+import type { message, Update, updateMessageSendSucceeded } from 'tdlib-types';
 import { getAuthCode } from './authCode.js'
 import { logger } from './logger.js';
 import { config } from './config.js';
@@ -42,10 +42,11 @@ export class Tg {
 
   async loadMessages(chatId: number, since: number) {
     // avoid "Chat not found" error
-    await this.getChats();
+    // await this.getChats();
 
     // open chat to load latest messages
-    await this.openChat(chatId);
+    const r = await this.openChat(chatId);
+    console.log(r)
 
     // here delay is important to load latest messages
     // todo: better logic!
@@ -74,7 +75,7 @@ export class Tg {
       offset: 0,
       limit,
     });
-    this.logger.log(`getChatHistory loading: ${messages.length}`);
+    this.logger.log(`getChatHistory loaded: ${messages.length}`);
     return (messages || []).filter(Boolean) as message[];
   }
 
@@ -156,6 +157,7 @@ export class Tg {
   }
 
   protected onUpdate(update: Update) {
+    this.logger.debug(update._);
     for (const [ fn, resolve ] of this.listeners) {
       if (fn(update)) {
         this.listeners.delete(fn);

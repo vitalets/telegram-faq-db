@@ -30,5 +30,4 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         BUCKET: ${{ secrets.BUCKET }}
-        SOURCE_CHAT_ID: ${{ secrets.SOURCE_CHAT_ID }}
         DIGEST_CHAT_ID: ${{ secrets.DIGEST_CHAT_ID }}
