@@ -1,14 +1,14 @@
 /**
  * Reads auth code from s3 bucket folder name
  */
+import { config } from './config.js';
 import { S3 } from './s3.js';
 
-const bucket = 'tmp-objects';
 const prefix = 'code';
 const attempts = 60;
 
 export async function getAuthCode() {
-  const s3 = new S3(bucket);
+  const s3 = new S3(config.bucket);
   for (let i = 0; i < attempts; i++) {
     console.log(`Checking auth key, attempt #${i}`);
     const keys = await s3.listKeys(prefix);
