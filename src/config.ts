@@ -21,4 +21,4 @@ export const config = {
   // Time range for messsages with no answer
   noAnswerMessagesTimeRange: { since: -60 * 2, to: -60 },
   noAnswerMaxCount: 10,
-}
+};

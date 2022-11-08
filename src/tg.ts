@@ -8,7 +8,7 @@ import { TDLib } from 'tdl-tdlib-addon';
 import { getTdjson } from 'prebuilt-tdlib';
 import timers from 'timers/promises';
 import type { message, Update, updateMessageSendSucceeded } from 'tdlib-types';
-import { getAuthCode } from './authCode.js'
+import { getAuthCode } from './authCode.js';
 import { logger } from './logger.js';
 import { config } from './config.js';
 
@@ -49,6 +49,7 @@ export class Tg {
     ]);
   }
 
+  // eslint-disable-next-line max-statements
   async loadMessages(chatId: number, since: number) {
     // open chat to load latest messages
     // const r = await this.openChat(chatId);
@@ -65,6 +66,7 @@ export class Tg {
       if (!messages.length) break;
       fromMessageId = messages[messages.length - 1].id;
       for (const m of messages) {
+        // eslint-disable-next-line max-depth
         if (m.date < since) return totalMessages;
         totalMessages.push(m);
       }
@@ -140,7 +142,7 @@ export class Tg {
   async waitForReady() {
     await this.waitForEvent(u => {
       return u._ === 'updateConnectionState'
-        && u.state._ === 'connectionStateReady'
+        && u.state._ === 'connectionStateReady';
     });
   }
 

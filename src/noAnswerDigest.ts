@@ -20,9 +20,9 @@ export class NoAnswerDigest {
   /**
    * Creates digest instance from existing message in channel.
    */
-  static fromMessage(m: message) {
-    // todo
-  }
+  // static fromMessage(m: message) {
+  //   // todo
+  // }
 
   constructor(protected tg: Tg, protected messages: message[]) { }
 
@@ -41,7 +41,7 @@ export class NoAnswerDigest {
     if (!messages.length) return '';
     const chatInfo = chats.find(chat => chat.id === chatId)!;
     const groupHeader = `**${chatInfo.name}** ([вступить](${chatInfo.link}))`;
-    const items = messages.map((m, i) => {
+    const items = messages.map(m => {
       const content = m.content as messageText;
       const text = cutStr(removeNewLines(content.text.text), maxQuestionLength);
       return `🔹 [${text}](${this.links.get(m.id)})`;
@@ -52,10 +52,11 @@ export class NoAnswerDigest {
   protected async loadLinks() {
     const tasks = this.messages.map(m => this.tg.getMessageLink(m.chat_id, m.id));
     const links = await Promise.all(tasks);
-    this.messages.forEach((m, i) => this.links.set(m.id, links[i]))
+    this.messages.forEach((m, i) => this.links.set(m.id, links[i]));
   }
 }
 
+// eslint-disable-next-line complexity
 export function isNoAnswerMessage(m: message) {
   return isTextMessage(m)
     && hasMinLength(m, 30)

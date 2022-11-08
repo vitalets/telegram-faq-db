@@ -4,9 +4,14 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "prepare": "git config core.hooksPath ./.hooks",
+    "lint": "eslint src --ext .ts",
     "check": "ts-node-esm scripts/check.ts",
     "check:d": "LOG_LEVEL=debug npm run check",
     "send-digest": "ts-node-esm src/index.ts"
+  },
+  "lint-staged": {
+    "{src}/**/*.ts": "eslint --ext .ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.202.0",
