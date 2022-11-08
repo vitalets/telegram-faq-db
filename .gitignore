@@ -12,3 +12,4 @@ dist
 tmp
 libtdjson
 scripts/check.ts
+todo.txt
