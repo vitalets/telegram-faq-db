@@ -1,10 +1,10 @@
 import { Tg } from './tg.js';
 import { S3 } from './s3.js';
 import { logger } from './logger.js';
-import { message, messageText } from 'tdlib-types';
+import { message } from 'tdlib-types';
 import { NoAnswerDigest, isNoAnswerMessage } from './noAnswerDigest.js';
 import { config } from './config.js';
-import { ChatConfig, chats } from './configChats.js';
+import { ChatConfig, chats } from './config.chats.js';
 import { cutStr, removeNewLines } from './utils.js';
 
 type TimeRange = {
@@ -22,7 +22,6 @@ export class App {
     this.tg = new Tg();
     try {
       await this.tg.login();
-      await this.tg.waitForReady();
       await this.handleNoAnswerMessages();
     } finally {
       await this.tg.close();
@@ -33,8 +32,7 @@ export class App {
   async handleNoAnswerMessages() {
     const messages = await this.loadNoAnswerMessages();
     if (!messages.length) return;
-    const links = await this.loadLinks(messages);
-    const text = new NoAnswerDigest(messages, links).buildText();
+    const text = await new NoAnswerDigest(this.tg, messages).buildText();
     !config.dryRun && await this.tg.sendMessage(config.digestChatId, text);
     this.logger.log(`Digest sent.${config.dryRun ? ' (dry run)' : ''}`);
   }
@@ -74,13 +72,6 @@ export class App {
       this.logger.log(`Last message: ${cutStr(removeNewLines(text), 50)}`);
     }
     return noAnswerMessages;
-  }
-
-  async loadLinks(questions: message[]) {
-    const tasks = questions.map(m => this.tg.getMesssageLink(m.chat_id, m.id));
-    const links = await Promise.all(tasks);
-    this.logger.log(`Loaded links ${links.length}`);
-    return links;
   }
 
   async downloadDb() {

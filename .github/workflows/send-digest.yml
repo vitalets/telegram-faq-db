@@ -2,11 +2,14 @@ name: send digest
 
 on:
   schedule:
-    # run every 10 minutes for test
-    - cron:  '*/10 * * * *'
+    - cron:  '0 * * * *'
   push:
     branches:
       - main
+    # inputs:
+    #   digestChatId:
+    #     required: true
+    #     type: number
   workflow_dispatch:
     inputs:
       digestChatId:

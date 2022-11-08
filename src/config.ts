@@ -19,6 +19,6 @@ export const config = {
   tdlibDbPath: 'tmp',
   digestChatId: Number(env.DIGEST_CHAT_ID),
   // Time range for messsages with no answer
-  noAnswerMessagesTimeRange: { since: -30 * 1, to: 0 },
+  noAnswerMessagesTimeRange: { since: -60 * 2, to: -60 },
   noAnswerMaxCount: 10,
 }

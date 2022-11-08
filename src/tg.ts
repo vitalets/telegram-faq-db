@@ -27,26 +27,32 @@ export class Tg {
   }
 
   async login() {
-    await this.client.login(() => {
-      return {
-        getPhoneNumber: async () => config.telegramPhone,
-        getAuthCode: async () => getAuthCode(),
-      };
-    });
+    await Promise.all([
+      this.client.login(() => {
+        return {
+          getPhoneNumber: async () => config.telegramPhone,
+          getAuthCode: async () => getAuthCode(),
+        };
+      }),
+      this.waitForReady(),
+    ]);
     this.logger.log('logged in');
   }
 
   async close() {
-    await this.client.close();
+    await Promise.all([
+      this.client.close(),
+      this.waitForEvent(u => {
+        return u._ === 'updateAuthorizationState'
+          && u.authorization_state._ === 'authorizationStateClosed';
+      }),
+    ]);
   }
 
   async loadMessages(chatId: number, since: number) {
-    // avoid "Chat not found" error
-    // await this.getChats();
-
     // open chat to load latest messages
-    const r = await this.openChat(chatId);
-    console.log(r)
+    // const r = await this.openChat(chatId);
+    // console.log(r)
 
     // here delay is important to load latest messages
     // todo: better logic!
@@ -109,7 +115,8 @@ export class Tg {
       chat_id: chatId,
       input_message_content: {
         _: 'inputMessageText',
-        text: parsed
+        text: parsed,
+        disable_web_page_preview: true,
       }
     });
 
@@ -132,11 +139,12 @@ export class Tg {
 
   async waitForReady() {
     await this.waitForEvent(u => {
-      return u._ === 'updateConnectionState' && u.state._ === 'connectionStateReady'
+      return u._ === 'updateConnectionState'
+        && u.state._ === 'connectionStateReady'
     });
   }
 
-  async getMesssageLink(chatId: number, messageId: number) {
+  async getMessageLink(chatId: number, messageId: number) {
     const { link } = await this.client.invoke({
       _: 'getMessageLink',
       chat_id: chatId,
