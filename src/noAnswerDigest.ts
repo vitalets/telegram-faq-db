@@ -1,5 +1,16 @@
+/**
+ * Build/parse no answers digest message
+ */
 import { message, messageText } from 'tdlib-types';
 import { logger } from './logger.js';
+
+const header = [
+  'На эти вопросы никто не ответил в течение часа.',
+  'Возможно вы сможете помочь.',
+].join(' ');
+
+// todo: replace \n+ with space
+// todo: cut long messages
 
 export class NoAnswerDigest {
   protected logger = logger.withPrefix(`[${this.constructor.name}]:`);
@@ -10,13 +21,13 @@ export class NoAnswerDigest {
       const content = m.content as messageText;
       return `🔹 [${content.text.text}](${this.links[i]})`;
     });
-    const text = [ '**Вопросы без ответа:**', ...items ].join('\n\n');
+    const text = [ `**${header}**`, ...items ].join('\n\n');
     this.logger.log(`Text built:\n${text}`);
     return text;
   }
 }
 
-export function isQuestionWithoutAnswer(m: message) {
+export function isNoAnswerMessage(m: message) {
   return !isReply(m)
     && !hasReplies(m)
     && isQuestion(m)

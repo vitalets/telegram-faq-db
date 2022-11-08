@@ -1,5 +1,6 @@
 import { Logger, LogLevel } from '@vitalets/logger';
+import { config } from './config.js';
 
-const level = (process.env.LOG_LEVEL || 'info') as LogLevel;
-
-export const logger = new Logger({ level });
+export const logger = new Logger({
+  level: config.logLevel as LogLevel
+});

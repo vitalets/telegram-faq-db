@@ -2,15 +2,12 @@ import { Tg } from './tg.js';
 import { S3 } from './s3.js';
 import { logger } from './logger.js';
 import { message } from 'tdlib-types';
-import { NoAnswerDigest, isQuestionWithoutAnswer } from './digest.js';
-
-const SOURCE_CHAT_ID = Number(process.env.SOURCE_CHAT_ID);
-const DIGEST_CHAT_ID = Number(process.env.DIGEST_CHAT_ID);
-const minutesOffset = { since: -60 * 1, to: -1 };
+import { NoAnswerDigest, isNoAnswerMessage } from './noAnswerDigest.js';
+import { config } from './config.js';
 
 export class App {
   logger = logger.withPrefix(`[${this.constructor.name}]:`);
-  s3 = new S3('static-test'); // todo: use config
+  s3 = new S3(config.bucket);
   tg!: Tg;
 
   async run() {
@@ -18,34 +15,34 @@ export class App {
     this.tg = new Tg();
     try {
       await this.tg.login();
-      await this.handleMessages();
+      await this.handleNewMessages();
     } finally {
       await this.tg.close();
       await this.uploadDb();
     }
   }
 
-  async handleMessages() {
-    const questions = await this.loadQuestions();
-    if (!questions.length) return;
-    const links = await this.loadLinks(questions);
-    const text = new NoAnswerDigest(questions, links).buildText();
-    await this.tg.sendMessage(DIGEST_CHAT_ID, text);
+  async handleNewMessages() {
+    const messages = await this.loadNoAnswerMessages();
+    if (!messages.length) return;
+    const links = await this.loadLinks(messages);
+    const text = new NoAnswerDigest(messages, links).buildText();
+    await this.tg.sendMessage(config.digestChatId, text);
     this.logger.log(`Digest sent.`);
   }
 
-  async loadQuestions() {
-    const { since, to } = this.getMessagesDateRange();
+  async loadNoAnswerMessages() {
+    const { since, to } = this.getMessagesTimeRange();
     this.logger.log(`Loading messages since: ${new Date(since * 1000)}`);
-    const messages = await this.tg.loadMessages(SOURCE_CHAT_ID, since);
+    const messages = await this.tg.loadMessages(config.sourceChatId, since);
     this.logger.log(`Loaded messages: ${messages.length}`);
     // @ts-ignore
     this.logger.log(`Last message: ${messages[0].content.text.text}`);
-    const questions = messages
+    const naMessages = messages
       .filter(m => m.date < to)
-      .filter(m => isQuestionWithoutAnswer(m));
-    this.logger.log(`Found questions: ${questions.length}`);
-    return questions;
+      .filter(m => isNoAnswerMessage(m));
+    this.logger.log(`No answer messages: ${naMessages.length}`);
+    return naMessages;
   }
 
   async loadLinks(questions: message[]) {
@@ -56,21 +53,22 @@ export class App {
   }
 
   async downloadDb() {
-    if (process.env.CI) {
-      await this.s3.downloadDir('tmp', 'tmp');
+    if (config.isCI) {
+      await this.s3.downloadDir(config.tdlibDbPath, config.tdlibDbPath);
     }
   }
 
   async uploadDb() {
-    if (process.env.CI) {
-      await this.s3.uploadDir('tmp', 'tmp');
+    if (config.isCI) {
+      await this.s3.uploadDir(config.tdlibDbPath, config.tdlibDbPath);
     }
   }
 
-  getMessagesDateRange() {
+  getMessagesTimeRange() {
+    const { since, to } = config.noAnswerMessagesTimeRange;
     return {
-      since: getTimeWithMinutesOffset(minutesOffset.since),
-      to: getTimeWithMinutesOffset(minutesOffset.to),
+      since: getTimeWithMinutesOffset(since),
+      to: getTimeWithMinutesOffset(to),
     };
   }
 }

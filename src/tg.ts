@@ -2,28 +2,19 @@
  * Methods:
  * https://core.telegram.org/tdlib/docs/classtd_1_1td__api_1_1_function.html
  */
-// https://t.me/iterevan/35994
+
 import { Client } from 'tdl';
 import { TDLib } from 'tdl-tdlib-addon';
 import { getTdjson } from 'prebuilt-tdlib';
+import timers from 'timers/promises';
 import type { messageText, message, Update, updateMessageSendSucceeded } from 'tdlib-types';
 import { getAuthCode } from './authCode.js'
 import { logger } from './logger.js';
+import { config } from './config.js';
 
 const tdlibPath = process.platform === 'linux'
   ? getTdjson()
-  // ? './libtdjson/libtdjson.so.1.8.7'
-  : '../td/tdlib/lib/libtdjson.dylib'; // local development
-
-const dbPath = 'tmp';
-
-// export type ChatMessage = {
-//   id: number;
-//   to: number;
-//   text: string;
-//   toText?: string;
-//   date: number;
-// }
+  : config.tdlibJsonPathLocal;
 
 export class Tg {
   protected logger = logger.withPrefix(`[${this.constructor.name}]:`);
@@ -31,27 +22,14 @@ export class Tg {
   protected listeners = new Map<(u: Update) => unknown, (u: Update) => void>();
 
   constructor() {
-    const tdlib = new TDLib(tdlibPath);
-    this.client = new Client(tdlib, {
-      apiId: Number(process.env.TELEGRAM_APP_ID),
-      apiHash: process.env.TELEGRAM_APP_HASH,
-      databaseDirectory: `${dbPath}/_td_database`,
-      filesDirectory: `${dbPath}/_td_files`,
-    });
-    this.client.on('update', update => {
-      for (const [ fn, resolve ] of this.listeners) {
-        if (fn(update)) {
-          this.listeners.delete(fn);
-          resolve(update);
-        }
-      }
-    });
+    this.client = this.createClient();
+    this.client.on('update', update => this.onUpdate(update));
   }
 
   async login() {
     await this.client.login(() => {
       return {
-        getPhoneNumber: async () => process.env.TELEGRAM_PHONE || '',
+        getPhoneNumber: async () => config.telegramPhone,
         getAuthCode: async () => getAuthCode(),
       };
     });
@@ -70,7 +48,8 @@ export class Tg {
     await this.openChat(chatId);
 
     // here delay is important to load latest messages
-    await new Promise(r => setTimeout(r, 1000))
+    // todo: better logic!
+    await timers.setTimeout(1000);
 
     const totalMessages: message[] = [];
     let fromMessageId = 0;
@@ -103,7 +82,7 @@ export class Tg {
     return this.client.invoke({
       _: 'getChats',
       chat_list: { _: 'chatListMain' },
-      limit: 4000
+      limit: 100
     });
   }
 
@@ -117,13 +96,12 @@ export class Tg {
   async sendMessage(chatId: number, text: string) {
     const parsed = this.client.execute({
       _: 'parseMarkdown',
-      text: {
-        _: 'formattedText',
-        text
-      }
+      text: { _: 'formattedText', text }
     });
 
-    if (parsed?._ !== 'formattedText') throw new Error(`Error in markdown: ${text}`);
+    if (parsed?._ !== 'formattedText') {
+      throw new Error(`Error in markdown: ${text}`);
+    }
 
     const { id } = await this.client.invoke({
       _: 'sendMessage',
@@ -133,19 +111,20 @@ export class Tg {
         text: parsed
       }
     });
-    // todo: timeout
+
     const { message } = await this.waitForEvent(u => {
       return u._ === 'updateMessageSendSucceeded' && u.old_message_id === id;
-    }) as updateMessageSendSucceeded;
+    }, { timeout: 2000 }) as updateMessageSendSucceeded;
+
     return message;
   }
 
-  async waitForEvent(fn: (u: Update) => unknown, timeout = 0) {
+  async waitForEvent(fn: (u: Update) => unknown, { timeout = 0 } = {}) {
     return new Promise<Update>((resolve, reject) => {
       this.listeners.set(fn, resolve);
       timeout && setTimeout(() => {
         this.listeners.delete(fn);
-        reject(new Error('Timeout'));
+        reject(new Error(`Timeout ${timeout}ms for fn: ${fn}`));
       }, timeout);
     });
   }
@@ -158,5 +137,24 @@ export class Tg {
     });
 
     return link;
+  }
+
+  protected createClient() {
+    const tdlib = new TDLib(tdlibPath);
+    return new Client(tdlib, {
+      apiId: config.telegramAppId,
+      apiHash: config.telegramAppHash,
+      databaseDirectory: `${config.tdlibDbPath}/_td_database`,
+      filesDirectory: `${config.tdlibDbPath}/_td_files`,
+    });
+  }
+
+  protected onUpdate(update: Update) {
+    for (const [ fn, resolve ] of this.listeners) {
+      if (fn(update)) {
+        this.listeners.delete(fn);
+        resolve(update);
+      }
+    }
   }
 }

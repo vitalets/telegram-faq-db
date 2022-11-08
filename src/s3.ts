@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import mime from 'mime';
 import fg from 'fast-glob';
 import { logger } from './logger.js';
+import { config } from './config.js';
 import {
   S3Client,
   ListObjectsV2Command,
@@ -15,10 +16,6 @@ import {
   PutObjectCommand,
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
-
-
-// todo: create separate service account
-const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env;
 
 const REGION = 'ru-central1';
 const ENDPOINT = 'https://storage.yandexcloud.net';
@@ -32,8 +29,8 @@ export class S3 {
       region: REGION,
       endpoint: ENDPOINT,
       credentials: {
-        accessKeyId: AWS_ACCESS_KEY_ID || '',
-        secretAccessKey: AWS_SECRET_ACCESS_KEY || '',
+        accessKeyId: config.accessKeyId,
+        secretAccessKey: config.secretAccessKey,
       }
     });
   }
