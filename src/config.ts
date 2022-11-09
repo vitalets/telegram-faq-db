@@ -3,7 +3,10 @@
  */
 const { env } = process;
 
+const isProduction = env.GITHUB_EVENT_NAME === 'schedule';
+
 export const config = {
+  isProduction,
   logLevel: env.LOG_LEVEL || 'info',
   isCI: Boolean(env.CI),
   dryRun: false,
@@ -17,8 +20,8 @@ export const config = {
   // for local development use tdlibjson compiled for Apple M1
   tdlibJsonPathLocal: './libtdjson/libtdjson.dylib',
   tdlibDbPath: 'tmp',
-  digestChatId: Number(env.DIGEST_CHAT_ID),
+  digestChatId: isProduction ? 129444032 : 129444032,
   // Time range for messsages with no answer
   noAnswerMessagesTimeRange: { since: -60 * 2, to: -60 },
-  noAnswerMaxCount: 10,
+  noAnswerMaxCount: 15,
 };

@@ -11,7 +11,7 @@ const mainHeader = [
   'На эти вопросы никто не ответил в течение часа.',
   'Возможно вы сможете помочь:',
 ].join(' ');
-const mainFooter = 'Спасибо 🙏';
+const mainFooter = 'Если ваши друзья могут знать ответ, перешлите им это сообщение 🙏';
 const maxQuestionLength = 150;
 
 export class NoAnswerDigest {
@@ -98,7 +98,7 @@ function hasLinks(m: message) {
  */
 function isOfferLS(m: message) {
   const { text } = (m.content as messageText).text;
-  return /\sлс([^а-яё]|\s|$)/i.test(text);
+  return /\s(лс|личк[уе])([^а-яё]|\s|$)/i.test(text);
 }
 
 function hasMinLength(m: message, length: number) {

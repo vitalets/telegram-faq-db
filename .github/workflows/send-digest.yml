@@ -2,19 +2,14 @@ name: send digest
 
 on:
   schedule:
-    - cron:  '10 * * * *'
+    # dont set beginning of hour as it is high load time for GitHub actions
+    # see: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+    - cron:  '30 * * * *'
   push:
     branches:
       - main
-    # inputs:
-    #   digestChatId:
-    #     required: true
-    #     type: number
+
   workflow_dispatch:
-    inputs:
-      digestChatId:
-        required: true
-        type: number
 
 jobs:
   send-digest:
@@ -33,4 +28,3 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         BUCKET: ${{ secrets.BUCKET }}
-        DIGEST_CHAT_ID: ${{ secrets.DIGEST_CHAT_ID }}
