@@ -20,7 +20,7 @@ export const config = {
   // for local development use tdlibjson compiled for Apple M1
   tdlibJsonPathLocal: './libtdjson/libtdjson.dylib',
   tdlibDbPath: 'tmp',
-  digestChatId: isProduction ? 129444032 : 129444032,
+  testChatId: 129444032,
   // Time range for messsages with no answer
   noAnswerMessagesTimeRange: { since: -60 * 2, to: -60 },
   noAnswerMaxCount: 15,

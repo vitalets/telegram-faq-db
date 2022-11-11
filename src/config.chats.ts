@@ -11,6 +11,9 @@ export type ChatConfig = {
   link: string;
 }
 
+// Channel to post digest
+export const digestChatId = -1001890247727;
+
 export const chats: ChatConfig[] = [
   {
     id: -1001669191797,

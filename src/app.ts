@@ -4,7 +4,7 @@ import { logger } from './logger.js';
 import { message } from 'tdlib-types';
 import { NoAnswerDigest, isNoAnswerMessage } from './noAnswerDigest.js';
 import { config } from './config.js';
-import { ChatConfig, chats } from './config.chats.js';
+import { ChatConfig, chats, digestChatId } from './config.chats.js';
 import { cutStr, removeNewLines } from './utils.js';
 
 type TimeRange = {
@@ -33,7 +33,10 @@ export class App {
     const messages = await this.loadNoAnswerMessages();
     if (!messages.length) return;
     const text = await new NoAnswerDigest(this.tg, messages).buildText();
-    !config.dryRun && await this.tg.sendMessage(config.digestChatId, text);
+    if (!config.dryRun) {
+      const targetChatId = config.isProduction ? digestChatId : config.testChatId;
+      await this.tg.sendMessage(targetChatId, text);
+    }
     this.logger.log(`Digest sent.${config.dryRun ? ' (dry run)' : ''}`);
   }
 
