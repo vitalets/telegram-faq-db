@@ -16,8 +16,10 @@ export class App {
   logger = logger.withPrefix(`[${this.constructor.name}]:`);
   s3 = new S3(config.bucket);
   tg!: Tg;
+  digestList: NoAnswerDigest[] = [];
 
   async run() {
+    this.logger.log(`Running app. isProduction: ${config.isProduction}`);
     await this.downloadDb();
     this.tg = new Tg();
     try {
@@ -48,11 +50,18 @@ export class App {
     // build text and edit message
   }
 
-  async loadPreviosDigest() {
+  async loadDigestList() {
     // this.logger.log(`Loading messages for: ${chat.name}`);
-    // const since = getTimeWithMinutesOffset(-12 * 60);
+    // const since = getTimeWithMinutesOffset(-6 * 60);
     // const targetChatId = config.isProduction ? digestChatId : config.testChatId;
     // const messages = await this.tg.loadMessages(targetChatId, since);
+    // this.digestList = messages
+    //   .map(m => NoAnswerDigest.tryCreateFromMessage(m))
+    //   .filter(Boolean);
+    // for (const d of digestList) {
+    //   await d.updateStatus();
+    // }
+    // const tasks = digestList.map(d => d.updateByLinks())
     // const digestMessages = messages.filter(m => m.date < to);
   }
 

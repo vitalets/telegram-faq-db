@@ -11,9 +11,10 @@ export type ChatConfig = {
   link: string;
 }
 
-// Channel to post digest
-export const digestChatId = -1001890247727;
+// Channel to post digest with no answers
+export const digestChatId = -1001875278358;
 
+// Chats to collect no answer messages
 export const chats: ChatConfig[] = [
   {
     id: -1001669191797,

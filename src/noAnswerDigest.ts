@@ -22,16 +22,16 @@ export class NoAnswerDigest {
     if (!isTextMessage(m)) return;
     const { text } = (m.content as messageText).text;
     if (!text.includes(mainHeader)) return;
-
+    // tbd
   }
 
   protected logger = logger.withPrefix(`[${this.constructor.name}]:`);
   protected links = new Map<number, string>();
 
-  constructor(protected tg: Tg, protected messages: message[]) { }
+  constructor(protected tg: Tg, protected messages: message[] = []) { }
 
   async buildText() {
-    await this.loadLinks();
+    await this.loadLinksByMessages();
     const groups = groupBy(this.messages, m => m.chat_id);
     const groupStrings = Object.keys(groups).map(chatId => {
       return this.buildGroupText(Number(chatId), groups[ chatId ]);
@@ -39,6 +39,10 @@ export class NoAnswerDigest {
     const text = [ mainHeader, ...groupStrings, mainFooter ].join('\n\n');
     this.logger.log(`Text built:\n${text}`);
     return text;
+  }
+
+  containsMessageId(id: number) {
+    return this.messages.some(m => m.id === id);
   }
 
   protected buildGroupText(chatId: number, messages: message[]) {
@@ -53,11 +57,16 @@ export class NoAnswerDigest {
     return [ groupHeader, ...items ].join('\n\n');
   }
 
-  protected async loadLinks() {
+  protected async loadLinksByMessages() {
     const tasks = this.messages.map(m => this.tg.getMessageLink(m.chat_id, m.id));
     const links = await Promise.all(tasks);
     this.messages.forEach((m, i) => this.links.set(m.id, links[ i ]));
   }
+
+  // protected async loadMessagesByLinks(links: string[]) {
+  //   const tasks = links.map(link => this.tg.);
+  //   this.links.
+  // }
 }
 
 // eslint-disable-next-line complexity
