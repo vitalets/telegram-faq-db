@@ -15,14 +15,18 @@ const mainFooter = 'Если ваши друзья знают ответ, пер
 const maxQuestionLength = 150;
 
 export class NoAnswerDigest {
-  protected logger = logger.withPrefix(`[${this.constructor.name}]:`);
-  protected links = new Map<number, string>();
   /**
    * Creates digest instance from existing message in channel.
    */
-  // static fromMessage(m: message) {
-  //   // todo
-  // }
+  static tryCreateFromMessage(m: message) {
+    if (!isTextMessage(m)) return;
+    const { text } = (m.content as messageText).text;
+    if (!text.includes(mainHeader)) return;
+
+  }
+
+  protected logger = logger.withPrefix(`[${this.constructor.name}]:`);
+  protected links = new Map<number, string>();
 
   constructor(protected tg: Tg, protected messages: message[]) { }
 
@@ -30,7 +34,7 @@ export class NoAnswerDigest {
     await this.loadLinks();
     const groups = groupBy(this.messages, m => m.chat_id);
     const groupStrings = Object.keys(groups).map(chatId => {
-      return this.buildGroupText(Number(chatId), groups[chatId]);
+      return this.buildGroupText(Number(chatId), groups[ chatId ]);
     }).filter(Boolean);
     const text = [ mainHeader, ...groupStrings, mainFooter ].join('\n\n');
     this.logger.log(`Text built:\n${text}`);
@@ -52,7 +56,7 @@ export class NoAnswerDigest {
   protected async loadLinks() {
     const tasks = this.messages.map(m => this.tg.getMessageLink(m.chat_id, m.id));
     const links = await Promise.all(tasks);
-    this.messages.forEach((m, i) => this.links.set(m.id, links[i]));
+    this.messages.forEach((m, i) => this.links.set(m.id, links[ i ]));
   }
 }
 

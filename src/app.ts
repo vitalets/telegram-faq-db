@@ -48,6 +48,14 @@ export class App {
     // build text and edit message
   }
 
+  async loadPreviosDigest() {
+    // this.logger.log(`Loading messages for: ${chat.name}`);
+    // const since = getTimeWithMinutesOffset(-12 * 60);
+    // const targetChatId = config.isProduction ? digestChatId : config.testChatId;
+    // const messages = await this.tg.loadMessages(targetChatId, since);
+    // const digestMessages = messages.filter(m => m.date < to);
+  }
+
   async loadNoAnswerMessages() {
     const timeRange = this.getMessagesTimeRange();
     const totalMessages: message[] = [];
