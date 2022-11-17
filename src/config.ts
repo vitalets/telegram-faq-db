@@ -22,6 +22,9 @@ export const config = {
   tdlibDbPath: 'tmp',
   testChatId: 129444032,
   // Time range for messsages with no answer
-  noAnswerMessagesTimeRange: { since: -60 * 2, to: -60 },
+  noAnswerMessagesTimeRange: { since: -2 * 60, to: -1 * 60 },
   noAnswerMaxCount: 15,
+  noAnswerMaxLength: 150,
+  // Minutes offset for digests to update
+  digestUpdateMinutesOffset: -6 * 60,
 };

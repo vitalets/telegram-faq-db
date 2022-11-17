@@ -1,43 +1,50 @@
 /**
- * Build/parse no answers digest message
+ * Class representing single message containing no-answer questions.
  */
 import { message, messageText } from 'tdlib-types';
 import { logger } from './logger.js';
 import { cutStr, groupBy, removeNewLines } from './utils.js';
 import { chats } from './config.chats.js';
+import { config } from './config.js';
 import { Tg } from './tg.js';
 
-const mainHeader = [
-  'На эти вопросы никто не ответил в течение часа.',
-  'Возможно вы сможете помочь:',
-].join(' ');
-const mainFooter = 'Если ваши друзья знают ответ, перешлите им это сообщение 🙏';
-const maxQuestionLength = 150;
+const mainHeader = 'На эти вопросы никто не ответил. Возможно, вы сможете помочь:';
+const mainFooter = 'Перешлите это сообщение друзьям, если они знают ответ 🙏';
 
 export class NoAnswerDigest {
-  /**
-   * Creates digest instance from existing message in channel.
-   */
-  static tryCreateFromMessage(m: message) {
-    if (!isTextMessage(m)) return;
-    const { text } = (m.content as messageText).text;
-    if (!text.includes(mainHeader)) return;
-    // tbd
-  }
-
   protected logger = logger.withPrefix(`[${this.constructor.name}]:`);
   protected links = new Map<number, string>();
+  protected messages: message[] = [];
+  protected rawMessage?: message;
 
-  constructor(protected tg: Tg, protected messages: message[] = []) { }
+  constructor(protected tg: Tg) { }
 
-  async buildText() {
-    await this.loadLinksByMessages();
+  async initByQuestions(messages: message[]) {
+    const tasks = messages.map(m => this.tg.getMessageLink(m.chat_id, m.id));
+    const links = await Promise.all(tasks);
+    this.messages = messages;
+    this.fillLinksMap(links);
+    return this;
+  }
+
+  async initByDigestMessage(m: message) {
+    this.rawMessage = m;
+    // todo: better check for message link
+    const links = extractLinks(m).filter(link => isLinkToMessage(link));
+    const tasks = links.map(link => this.tg.getMessageLinkInfo(link));
+    this.messages = (await Promise.all(tasks)).map(r => r.message!);
+    this.fillLinksMap(links);
+    return this;
+  }
+
+  buildText() {
     const groups = groupBy(this.messages, m => m.chat_id);
     const groupStrings = Object.keys(groups).map(chatId => {
       return this.buildGroupText(Number(chatId), groups[ chatId ]);
     }).filter(Boolean);
-    const text = [ mainHeader, ...groupStrings, mainFooter ].join('\n\n');
-    this.logger.log(`Text built:\n${text}`);
+    const text = groupStrings.length
+      ? [ mainHeader, ...groupStrings, mainFooter ].join('\n\n')
+      : '';
     return text;
   }
 
@@ -49,24 +56,27 @@ export class NoAnswerDigest {
     if (!messages.length) return '';
     const chatInfo = chats.find(chat => chat.id === chatId)!;
     const groupHeader = `**${chatInfo.name}** ([вступить](${chatInfo.link}))`;
-    const items = messages.map(m => {
-      const content = m.content as messageText;
-      const text = cutStr(removeNewLines(content.text.text), maxQuestionLength);
-      return `🔹 [${text}](${this.links.get(m.id)})`;
-    });
+    const items = messages.map(m => this.buildQuestionText(m));
     return [ groupHeader, ...items ].join('\n\n');
   }
 
-  protected async loadLinksByMessages() {
-    const tasks = this.messages.map(m => this.tg.getMessageLink(m.chat_id, m.id));
-    const links = await Promise.all(tasks);
-    this.messages.forEach((m, i) => this.links.set(m.id, links[ i ]));
+  protected buildQuestionText(m: message) {
+    const content = m.content as messageText;
+    const text = cutStr(removeNewLines(content.text.text), config.noAnswerMaxLength);
+    const link = this.links.get(m.id);
+    return hasReplies(m)
+      ? `✅ [~~${text}~~](${link})`
+      : `🔸 [${text}](${link})`;
   }
 
-  // protected async loadMessagesByLinks(links: string[]) {
-  //   const tasks = links.map(link => this.tg.);
-  //   this.links.
-  // }
+  protected fillLinksMap(links: string[]) {
+    this.messages.forEach((m, i) => this.links.set(m.id, links[ i ]));
+  }
+}
+
+export function isNoAnswerDigest(m: message) {
+  return isTextMessage(m)
+    && getText(m).includes(mainHeader);
 }
 
 // eslint-disable-next-line complexity
@@ -93,13 +103,12 @@ function hasReplies(m: message) {
 }
 
 function isQuestion(m: message) {
-  const { text } = (m.content as messageText).text;
+  const text = getText(m);
   return text.includes('?') || /подскажите/i.test(text);
 }
 
 function hasLinks(m: message) {
-  const { text } = m.content as messageText;
-  return text.entities.some(e => {
+  return (m.content as messageText).text.entities.some(e => {
     return e.type._ === 'textEntityTypeTextUrl'
       || e.type._ === 'textEntityTypeUrl'
       || e.type._ === 'textEntityTypeMention';
@@ -110,11 +119,26 @@ function hasLinks(m: message) {
  * Содержит предложение написать в лс
  */
 function isOfferLS(m: message) {
-  const { text } = (m.content as messageText).text;
-  return /\s(лс|личк[уе])([^а-яё]|\s|$)/i.test(text);
+  return /\s(лс|личк[уе])([^а-яё]|\s|$)/i.test(getText(m));
 }
 
 function hasMinLength(m: message, length: number) {
-  const { text } = (m.content as messageText).text;
-  return text.length >= length;
+  return getText(m).length >= length;
+}
+
+function getText(m: message) {
+  return (m.content as messageText).text.text;
+}
+
+function isLinkToMessage(link: string) {
+  return link.startsWith('https://t.me/c/');
+}
+
+function extractLinks(m: message) {
+  if (!isTextMessage(m)) return [];
+  return (m.content as messageText).text.entities.map(e => {
+    return (e._ === 'textEntity' && e.type._ === 'textEntityTypeTextUrl')
+      ? e.type.url
+      : '';
+  }).filter(Boolean);
 }

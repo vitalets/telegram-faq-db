@@ -2,7 +2,7 @@ import { Tg } from './tg.js';
 import { S3 } from './s3.js';
 import { logger } from './logger.js';
 import { message } from 'tdlib-types';
-import { NoAnswerDigest, isNoAnswerMessage } from './noAnswerDigest.js';
+import { NoAnswerDigest, isNoAnswerMessage, isNoAnswerDigest } from './noAnswerDigest.js';
 import { config } from './config.js';
 import { ChatConfig, chats, digestChatId } from './config.chats.js';
 import { cutStr, removeNewLines } from './utils.js';
@@ -24,56 +24,61 @@ export class App {
     this.tg = new Tg();
     try {
       await this.tg.login();
-      await this.handleNoAnswerMessages();
+      await this.updateDigestHistory();
+      await this.postNewDigest();
     } finally {
       await this.tg.close();
       await this.uploadDb();
+      config.dryRun && this.logger.log('DRY RUN.');
     }
   }
 
-  async handleNoAnswerMessages() {
-    const messages = await this.loadNoAnswerMessages();
-    if (!messages.length) return;
-    const text = await new NoAnswerDigest(this.tg, messages).buildText();
+  async postNewDigest() {
+    const questions = await this.loadNewNoAnswerMessages();
+    if (questions.length === 0) return;
+    const digest = await new NoAnswerDigest(this.tg).initByQuestions(questions);
+    const text = digest.buildText();
+    this.logger.log(`Text built:\n${text}`);
     if (!config.dryRun) {
       const targetChatId = config.isProduction ? digestChatId : config.testChatId;
       await this.tg.sendMessage(targetChatId, text);
     }
-    this.logger.log(`Digest sent.${config.dryRun ? ' (dry run)' : ''}`);
+    this.logger.log(`Digest posted.`);
   }
 
-  async updateNoAnswerDigest() {
-    // load messages from digest channel
-    // create instances, extract links
-    // check link info
-    // update info in digest
-    // build text and edit message
+  // eslint-disable-next-line max-statements
+  async updateDigestHistory() {
+    const since = getTimeWithMinutesOffset(config.digestUpdateMinutesOffset);
+    const targetChatId = config.isProduction ? digestChatId : config.testChatId;
+    this.logger.log(`Digest history loading since: ${new Date(since * 1000)}`);
+    const messages = await this.tg.loadMessages(targetChatId, since);
+    this.logger.log(`Digest history loaded: ${messages.length}`);
+
+    for (const message of messages) {
+      if (!isNoAnswerDigest(message)) continue;
+      const digest = await new NoAnswerDigest(this.tg).initByDigestMessage(message);
+      this.digestList.push(digest);
+      const text = digest.buildText();
+      this.logger.log(`Updating digest: ${message.id}`);
+      await this.tg.editMessageText(message, text);
+    }
+
+    this.logger.log(`Digest history updated.`);
   }
 
-  async loadDigestList() {
-    // this.logger.log(`Loading messages for: ${chat.name}`);
-    // const since = getTimeWithMinutesOffset(-6 * 60);
-    // const targetChatId = config.isProduction ? digestChatId : config.testChatId;
-    // const messages = await this.tg.loadMessages(targetChatId, since);
-    // this.digestList = messages
-    //   .map(m => NoAnswerDigest.tryCreateFromMessage(m))
-    //   .filter(Boolean);
-    // for (const d of digestList) {
-    //   await d.updateStatus();
-    // }
-    // const tasks = digestList.map(d => d.updateByLinks())
-    // const digestMessages = messages.filter(m => m.date < to);
-  }
-
-  async loadNoAnswerMessages() {
+  async loadNewNoAnswerMessages() {
     const timeRange = this.getMessagesTimeRange();
     const totalMessages: message[] = [];
     for (const chatConfig of chats) {
       const messages = await this.loadNoAnswerMessagesForChat(chatConfig, timeRange);
       totalMessages.push(...messages);
     }
-    this.logger.log(`Total no answer messages: ${totalMessages.length}`);
-    return totalMessages.slice(0, config.noAnswerMaxCount);
+    this.logger.log(`Loaded no-answer messages: ${totalMessages.length}`);
+    const newMessages = totalMessages
+      .filter(m => !this.isAlreadyPostedMessage(m))
+      .slice(0, config.noAnswerMaxCount);
+    this.logger.log(`New no-answer messages: ${newMessages.length}`);
+    return newMessages;
   }
 
   protected async loadNoAnswerMessagesForChat(chat: ChatConfig, { since, to }: TimeRange) {
@@ -106,7 +111,11 @@ export class App {
     }
   }
 
-  getMessagesTimeRange() {
+  protected isAlreadyPostedMessage(m: message) {
+    return this.digestList.some(digest => digest.containsMessageId(m.id));
+  }
+
+  protected getMessagesTimeRange() {
     const { since, to } = config.noAnswerMessagesTimeRange;
     return {
       since: getTimeWithMinutesOffset(since),
@@ -115,6 +124,9 @@ export class App {
   }
 }
 
+/**
+ * Shift current time by minutes and return value in seconds.
+ */
 function getTimeWithMinutesOffset(minutes: number) {
   const date = new Date();
   date.setMinutes(date.getMinutes() + minutes);

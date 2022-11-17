@@ -3,6 +3,8 @@
  * https://core.telegram.org/tdlib/docs/classtd_1_1td__api_1_1_function.html
  */
 
+/* eslint-disable max-lines */
+
 import { Client } from 'tdl';
 import { TDLib } from 'tdl-tdlib-addon';
 import { getTdjson } from 'prebuilt-tdlib';
@@ -87,11 +89,11 @@ export class Tg {
     return (messages || []).filter(Boolean) as message[];
   }
 
-  async getChats() {
+  async getChats(limit = 100) {
     return this.client.invoke({
       _: 'getChats',
       chat_list: { _: 'chatListMain' },
-      limit: 100
+      limit,
     });
   }
 
@@ -103,21 +105,12 @@ export class Tg {
   }
 
   async sendMessage(chatId: number, text: string) {
-    const parsed = this.client.execute({
-      _: 'parseMarkdown',
-      text: { _: 'formattedText', text }
-    });
-
-    if (parsed?._ !== 'formattedText') {
-      throw new Error(`Error in markdown: ${text}`);
-    }
-
     const { id } = await this.client.invoke({
       _: 'sendMessage',
       chat_id: chatId,
       input_message_content: {
         _: 'inputMessageText',
-        text: parsed,
+        text: this.parseMarkdown(text),
         disable_web_page_preview: true,
       }
     });
@@ -154,6 +147,41 @@ export class Tg {
     });
 
     return link;
+  }
+
+  async getMessageLinkInfo(url: string) {
+    return this.client.invoke({
+      _: 'getMessageLinkInfo',
+      url,
+    });
+  }
+
+  async editMessageText(m: message, text: string) {
+    const res = await this.client.invoke({
+      _: 'editMessageText',
+      chat_id: m.chat_id,
+      message_id: m.id,
+      input_message_content: {
+        _: 'inputMessageText',
+        text: this.parseMarkdown(text),
+        disable_web_page_preview: true,
+      }
+    });
+
+    return res;
+  }
+
+  parseMarkdown(text: string) {
+    const parsed = this.client.execute({
+      _: 'parseMarkdown',
+      text: { _: 'formattedText', text }
+    });
+
+    if (parsed?._ !== 'formattedText') {
+      throw new Error(`Error in markdown: ${text}`);
+    }
+
+    return parsed;
   }
 
   protected createClient() {
