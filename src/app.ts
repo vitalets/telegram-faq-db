@@ -58,6 +58,7 @@ export class App {
       if (!isNoAnswerDigest(message)) continue;
       const digest = await new NoAnswerDigest(this.tg).initByDigestMessage(message);
       this.digestList.push(digest);
+      // todo dryRun
       const text = digest.buildText();
       this.logger.log(`Updating digest: ${message.id}`);
       await this.tg.editMessageText(message, text);

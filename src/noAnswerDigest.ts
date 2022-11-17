@@ -32,7 +32,9 @@ export class NoAnswerDigest {
     // todo: better check for message link
     const links = extractLinks(m).filter(link => isLinkToMessage(link));
     const tasks = links.map(link => this.tg.getMessageLinkInfo(link));
-    this.messages = (await Promise.all(tasks)).map(r => r.message!);
+    this.messages = (await Promise.all(tasks))
+      .map(r => r.message!)
+      .filter(Boolean); // some messages can be deleted
     this.fillLinksMap(links);
     return this;
   }
