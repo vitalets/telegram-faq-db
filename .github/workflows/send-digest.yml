@@ -4,7 +4,7 @@ on:
   schedule:
     # dont set beginning of hour as it is high load time for GitHub actions
     # see: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-    - cron:  '*/15 * * * *'
+    - cron:  '* * * * *'
   push:
     branches:
       - main
