@@ -11,11 +11,20 @@ export type ChatConfig = {
   link: string;
 }
 
-// Channel to post digest with no answers
-export const digestChatId = -1001875278358;
+export const noAnswerConfig = {
+  // Time offset (minutes) to load no-answer messages
+  noAnswerMessagesOffsetSince: -2 * 60,
+  noAnswerMessagesOffsetTo: -1 * 60,
+  // Chat to post digest
+  digestChatId: -1001875278358,
+  digestItemsMaxCount: 15,
+  digestItemMaxLength: 150,
+  // Minutes offset for digests to update
+  digestUpdateOffsetSince: -6 * 60,
+};
 
 // Chats to collect no answer messages
-export const chats: ChatConfig[] = [
+export const noAnswerChats: ChatConfig[] = [
   {
     id: -1001669191797,
     name: 'Переезд в Армению | Взаимопомощь',

@@ -10,9 +10,9 @@ import { TDLib } from 'tdl-tdlib-addon';
 import { getTdjson } from 'prebuilt-tdlib';
 import timers from 'timers/promises';
 import type { message, Update, updateMessageSendSucceeded } from 'tdlib-types';
-import { getAuthCode } from './authCode.js';
-import { logger } from './logger.js';
-import { config } from './config.js';
+import { logger } from '../helpers/logger.js';
+import { config } from '../config.js';
+import { AuthCode } from './AuthCode.js';
 
 const tdlibPath = process.platform === 'linux'
   ? getTdjson()
@@ -20,8 +20,8 @@ const tdlibPath = process.platform === 'linux'
 
 export class Tg {
   protected logger = logger.withPrefix(`[${this.constructor.name}]:`);
-  client: Client;
   protected listeners = new Map<(u: Update) => unknown, (u: Update) => void>();
+  client: Client;
 
   constructor() {
     this.client = this.createClient();
@@ -33,7 +33,7 @@ export class Tg {
       this.client.login(() => {
         return {
           getPhoneNumber: async () => config.telegramPhone,
-          getAuthCode: async () => getAuthCode(),
+          getAuthCode: async () => new AuthCode().getCode(),
         };
       }),
       this.waitForReady(),
@@ -157,7 +157,7 @@ export class Tg {
   }
 
   async editMessageText(m: message, text: string) {
-    const res = await this.client.invoke({
+    return this.client.invoke({
       _: 'editMessageText',
       chat_id: m.chat_id,
       message_id: m.id,
@@ -167,8 +167,6 @@ export class Tg {
         disable_web_page_preview: true,
       }
     });
-
-    return res;
   }
 
   parseMarkdown(text: string) {

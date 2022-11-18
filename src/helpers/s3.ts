@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import mime from 'mime';
 import fg from 'fast-glob';
 import { logger } from './logger.js';
-import { config } from './config.js';
+import { config } from '../config.js';
 import {
   S3Client,
   ListObjectsV2Command,
