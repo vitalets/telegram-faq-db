@@ -56,13 +56,13 @@ export class Tg {
   async loadMessages(chatId: number, since: number) {
     // since can be relative
     if (since <= 0) since = offsetMinutes(since);
+
     // open chat to load latest messages
-    // const r = await this.openChat(chatId);
-    // console.log(r)
+    await this.openChat(chatId);
 
     // here delay is important to load latest messages
     // todo: better logic!
-    await timers.setTimeout(1000);
+    await timers.setTimeout(2000);
 
     const totalMessages: message[] = [];
     let fromMessageId = 0;
