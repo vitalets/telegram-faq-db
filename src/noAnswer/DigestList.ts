@@ -3,7 +3,7 @@
  */
 
 import { logger } from '../helpers/logger.js';
-import { offsetMinutes } from '../helpers/utils.js';
+import { formatDate, offsetMinutes } from '../helpers/utils.js';
 import { noAnswerConfig } from './armenia.config.js';
 import { Tg } from '../telegram/TgClient.js';
 import { TgMessage } from '../telegram/TgMessage.js';
@@ -17,7 +17,7 @@ export class NoAnswerDigestList {
 
   async load() {
     const since = offsetMinutes(noAnswerConfig.digestUpdateOffsetSince);
-    this.logger.log(`Digest list loading since: ${new Date(since * 1000)}`);
+    this.logger.log(`Digest list loading since: ${formatDate(since)}`);
     const messages = await this.tg.loadMessages(this.chatId, since);
     for (const m of messages) {
       const tgMessage = new TgMessage(this.tg, m);

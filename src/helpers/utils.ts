@@ -43,3 +43,18 @@ export function offsetMinutes(minutes: number, date = new Date()) {
   dateClone.setMinutes(dateClone.getMinutes() + minutes);
   return Math.round(dateClone.valueOf() / 1000);
 }
+
+/**
+ * Format date.
+ * @param timestamp in seconds!
+ */
+export function formatDate(timestamp: number | Date) {
+  const date = typeof timestamp === 'number'
+    ? new Date(timestamp * 1000)
+    : timestamp;
+  return new Intl.DateTimeFormat('ru-RU', {
+    dateStyle: 'short',
+    timeStyle: 'long',
+    timeZone: 'Asia/Yerevan',
+  }).format(date);
+}

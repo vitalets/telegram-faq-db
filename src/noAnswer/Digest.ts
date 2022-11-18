@@ -3,7 +3,7 @@
  */
 import { config } from '../config.js';
 import { logger } from '../helpers/logger.js';
-import { cutStr, groupBy, removeNewLines } from '../helpers/utils.js';
+import { cutStr, formatDate, groupBy, removeNewLines } from '../helpers/utils.js';
 import { noAnswerChats, noAnswerConfig } from './armenia.config.js';
 import { Tg } from '../telegram/TgClient.js';
 import { TgMessage } from '../telegram/TgMessage.js';
@@ -46,7 +46,7 @@ export class NoAnswerDigest {
     if (!this.digestMessage) throw new Error(`Can't update digest`);
     const text = this.buildText();
     const { id, date } = this.digestMessage.raw;
-    this.logger.log(`Text updating: ${id} ${new Date(date * 1000)}`);
+    this.logger.log(`Text updating: ${id} ${formatDate(date)}`);
     if (!config.dryRun) await this.tg.editMessageText(this.digestMessage.raw, text);
     this.logger.log(`Text updated.`);
   }
