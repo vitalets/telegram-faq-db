@@ -1,7 +1,7 @@
 import { config } from '../config.js';
 import { logger } from '../helpers/logger.js';
 import { offsetMinutes, removeDuplicates, TimeRange } from '../helpers/utils.js';
-import { ChatConfig, noAnswerChats, noAnswerConfig } from '../no-answer.config.js';
+import { ChatConfig, noAnswerChats, noAnswerConfig } from './armenia.config.js';
 import { Tg } from '../telegram/TgClient.js';
 import { TgMessage } from '../telegram/TgMessage.js';
 import { NoAnswerDigest } from './Digest.js';
@@ -47,19 +47,19 @@ export class NoAnswer {
       const chatMessages = await this.loadNoAnswerMessagesForChat(chatConfig, timeRange);
       messages.push(...chatMessages);
     }
-    this.logger.log(`Loaded no-answer messages: ${messages.length}`);
+    this.logger.log(`Total loaded no-answer messages: ${messages.length}`);
     return messages;
   }
 
   protected async loadNoAnswerMessagesForChat(chat: ChatConfig, range: TimeRange) {
-    this.logger.log(`Loading messages for: ${chat.name}`);
+    this.logger.log(`Chat loading messages for: ${chat.name}`);
     const messages = await this.tg.loadMessages(chat.id, range.since);
-    this.logger.log(`Loaded messages: ${messages.length}`);
+    this.logger.log(`Chat loaded messages: ${messages.length}`);
     const noAnswerMessages = messages
       .filter(m => m.date < range.to)
       .map(m => new TgMessage(this.tg, m))
       .filter(m => isNoAnswerMessage(m));
-    this.logger.log(`No-answer messages: ${noAnswerMessages.length}`);
+    this.logger.log(`Chat no-answer messages: ${noAnswerMessages.length}`);
     return noAnswerMessages;
   }
 
@@ -67,7 +67,7 @@ export class NoAnswer {
     const newMessages = removeDuplicates(messages, m => m.text)
       .filter(m => !this.isAlreadyPosted(m))
       .slice(0, noAnswerConfig.digestItemsMaxCount);
-    this.logger.log(`New no-answer messages: ${newMessages.length}`);
+    this.logger.log(`Total new no-answer messages: ${newMessages.length}`);
     return newMessages;
   }
 

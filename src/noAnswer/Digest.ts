@@ -4,12 +4,12 @@
 import { config } from '../config.js';
 import { logger } from '../helpers/logger.js';
 import { cutStr, groupBy, removeNewLines } from '../helpers/utils.js';
-import { noAnswerChats, noAnswerConfig } from '../no-answer.config.js';
+import { noAnswerChats, noAnswerConfig } from './armenia.config.js';
 import { Tg } from '../telegram/TgClient.js';
 import { TgMessage } from '../telegram/TgMessage.js';
 
 const mainHeader = 'На эти вопросы никто не ответил. Возможно, вы сможете помочь:';
-const mainFooter = 'Перешлите это сообщение друзьям, если они знают ответ 🙏';
+const mainFooter = 'Перешлите друзьям, если они знают ответ 🙏';
 const chatHeader = '**{chatName}** ([вступить]({chatLink}))';
 const question = '🔸 [{text}]({link})';
 const questionAnswered = '✅ [~~{text}~~]({link})';
@@ -23,13 +23,13 @@ export class NoAnswerDigest {
 
   async initByNoAnswerMessages(noAnswerMessages: TgMessage[]) {
     this.messages = noAnswerMessages;
-    await Promise.all(this.messages.map(m => m.fillLink()));
+    await this.fillLinks();
     return this;
   }
 
   async initByDigestMessage(digestMessage: TgMessage) {
     this.digestMessage = digestMessage;
-    const links = extractLinks(digestMessage);
+    const links = this.extractQuestionLinks(digestMessage);
     const tasks = links.map(link => TgMessage.tryCreateFromLink(this.tg, link));
     this.messages = (await Promise.all(tasks)).filter(Boolean) as TgMessage[];
     return this;
@@ -82,16 +82,24 @@ export class NoAnswerDigest {
       .replace('{text}', text)
       .replace('{link}', m.link);
   }
+
+  protected async fillLinks() {
+    const tasks = this.messages.map(message => message.fillLink());
+    await Promise.all(tasks);
+  }
+
+  protected extractQuestionLinks(digestMessage: TgMessage) {
+    return digestMessage.entities.map(e => {
+      if (e._ === 'textEntity' && e.type._ === 'textEntityTypeTextUrl') {
+        const linkText = digestMessage.text.slice(e.offset, e.offset + e.length);
+        return linkText !== 'вступить' ? e.type.url : '';
+      } else {
+        return '';
+      }
+    }).filter(Boolean);
+  }
 }
 
 export function isNoAnswerDigest(m: TgMessage) {
   return m.isTextMessage && m.text.includes(mainHeader);
-}
-
-function extractLinks(m: TgMessage) {
-  return m.entities.map(e => {
-    return (e._ === 'textEntity' && e.type._ === 'textEntityTypeTextUrl')
-      ? e.type.url
-      : '';
-  }).filter(Boolean);
 }

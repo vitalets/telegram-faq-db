@@ -4,7 +4,7 @@
 
 import { logger } from '../helpers/logger.js';
 import { offsetMinutes } from '../helpers/utils.js';
-import { noAnswerConfig } from '../no-answer.config.js';
+import { noAnswerConfig } from './armenia.config.js';
 import { Tg } from '../telegram/TgClient.js';
 import { TgMessage } from '../telegram/TgMessage.js';
 import { isNoAnswerDigest, NoAnswerDigest } from './Digest.js';

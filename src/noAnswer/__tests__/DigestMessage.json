@@ -1,0 +1,134 @@
+{
+  "_": "message",
+  "id": 157286400,
+  "sender_id": {
+    "_": "messageSenderUser",
+    "user_id": 5719574014
+  },
+  "chat_id": 129444032,
+  "is_outgoing": true,
+  "is_pinned": false,
+  "can_be_edited": true,
+  "can_be_forwarded": true,
+  "can_be_saved": true,
+  "can_be_deleted_only_for_self": true,
+  "can_be_deleted_for_all_users": true,
+  "can_get_added_reactions": false,
+  "can_get_statistics": false,
+  "can_get_message_thread": false,
+  "can_get_viewers": false,
+  "can_get_media_timestamp_links": false,
+  "can_report_reactions": false,
+  "has_timestamped_media": true,
+  "is_channel_post": false,
+  "contains_unread_mention": false,
+  "date": 1668766089,
+  "edit_date": 0,
+  "unread_reactions": [],
+  "reply_in_chat_id": 0,
+  "reply_to_message_id": 0,
+  "message_thread_id": 0,
+  "ttl": 0,
+  "ttl_expires_in": 0,
+  "via_bot_user_id": 0,
+  "author_signature": "",
+  "media_album_id": "0",
+  "restriction_reason": "",
+  "content": {
+    "_": "messageText",
+    "text": {
+      "_": "formattedText",
+      "text": "На эти вопросы никто не ответил. Возможно, вы сможете помочь:\n\nАрмения — релокация, ВНЖ, переезд (вступить)\n\n🔸 Добрый день, может кто--нибудь подсказать, делает ли какой-нибудь банк в армении счет и карту по доверенности?\n\n🔸 Добрый день, подскажите пожалуйста арендодатели в Армении должны ли какой-то налог уплачивать государству, с денег полученных за счёт аренды?\n\n🔸 Привет, может кто документы передать из Москва в Ереван передать Срочно?\n\nЕреван 🇦🇲 Чат TravelAsk (вступить)\n\n🔸 Здравствуйте! Подскажите, пожалуйста, может есть какие-то маршрутки Ереван-СПб?  Хочу сумку с вещами отправить, или может частники занимаются этим?\n\n🔸 Друзья подскажите красивые места недалеко от Еревана , куда можно съездить с собачкой , чтобы совместить и культурный выезд и приятную прогулку?\n\n🔸 Приветы. Надо срочно купить недорогой atx корпус без БП. Тут что то такое пролетало, но поиском не ищется. Поможете?\n\nПерешлите это сообщение друзьям, если они знают ответ 🙏",
+      "entities": [
+        {
+          "_": "textEntity",
+          "offset": 63,
+          "length": 33,
+          "type": {
+            "_": "textEntityTypeBold"
+          }
+        },
+        {
+          "_": "textEntity",
+          "offset": 98,
+          "length": 8,
+          "type": {
+            "_": "textEntityTypeTextUrl",
+            "url": "https://t.me/+9ZZG-ojnofE5Mjdi"
+          }
+        },
+        {
+          "_": "textEntity",
+          "offset": 112,
+          "length": 110,
+          "type": {
+            "_": "textEntityTypeTextUrl",
+            "url": "https://t.me/c/1719695860/69618"
+          }
+        },
+        {
+          "_": "textEntity",
+          "offset": 227,
+          "length": 141,
+          "type": {
+            "_": "textEntityTypeTextUrl",
+            "url": "https://t.me/c/1719695860/69606"
+          }
+        },
+        {
+          "_": "textEntity",
+          "offset": 373,
+          "length": 72,
+          "type": {
+            "_": "textEntityTypeTextUrl",
+            "url": "https://t.me/c/1719695860/69592"
+          }
+        },
+        {
+          "_": "textEntity",
+          "offset": 447,
+          "length": 25,
+          "type": {
+            "_": "textEntityTypeBold"
+          }
+        },
+        {
+          "_": "textEntity",
+          "offset": 474,
+          "length": 8,
+          "type": {
+            "_": "textEntityTypeTextUrl",
+            "url": "https://t.me/+9HMo1MGt1Jc3N2Yy"
+          }
+        },
+        {
+          "_": "textEntity",
+          "offset": 488,
+          "length": 147,
+          "type": {
+            "_": "textEntityTypeTextUrl",
+            "url": "https://t.me/c/1426091267/194623"
+          }
+        },
+        {
+          "_": "textEntity",
+          "offset": 640,
+          "length": 144,
+          "type": {
+            "_": "textEntityTypeTextUrl",
+            "url": "https://t.me/c/1426091267/194601"
+          }
+        },
+        {
+          "_": "textEntity",
+          "offset": 789,
+          "length": 116,
+          "type": {
+            "_": "textEntityTypeTextUrl",
+            "url": "https://t.me/c/1426091267/194598"
+          }
+        }
+      ]
+    }
+  }
+}

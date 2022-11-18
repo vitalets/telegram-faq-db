@@ -13,6 +13,7 @@ import type { message, Update, updateMessageSendSucceeded } from 'tdlib-types';
 import { logger } from '../helpers/logger.js';
 import { config } from '../config.js';
 import { AuthCode } from './AuthCode.js';
+import { offsetMinutes } from '../helpers/utils.js';
 
 const tdlibPath = process.platform === 'linux'
   ? getTdjson()
@@ -53,6 +54,8 @@ export class Tg {
 
   // eslint-disable-next-line max-statements
   async loadMessages(chatId: number, since: number) {
+    // since can be relative
+    if (since <= 0) since = offsetMinutes(since);
     // open chat to load latest messages
     // const r = await this.openChat(chatId);
     // console.log(r)
@@ -73,6 +76,7 @@ export class Tg {
         totalMessages.push(m);
       }
     }
+
     return totalMessages;
   }
 

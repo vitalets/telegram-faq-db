@@ -4,13 +4,8 @@
 import { message } from 'tdlib-types';
 import { Tg } from './TgClient.js';
 
-// export function isTextMessage(message?: message) {
-//   return message?.content?._ === 'messageText';
-// }
-
 export class TgMessage {
   static async tryCreateFromLink(tg: Tg, link: string) {
-    if (!isMessageLink(link)) return;
     const { message } = await tg.getMessageLinkInfo(link);
     if (message) {
       const textMessage = new TgMessage(tg, message);
