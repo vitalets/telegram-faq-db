@@ -45,8 +45,9 @@ export class NoAnswerDigest {
   async update() {
     if (!this.digestMessage) throw new Error(`Can't update digest`);
     const text = this.buildText();
-    const { id, date } = this.digestMessage.raw;
-    this.logger.log(`Text updating: ${id} ${formatDate(date)}`);
+    const { id, date, edit_date } = this.digestMessage.raw;
+    const editDate = edit_date ? `, edited ${formatDate(edit_date)}` : '';
+    this.logger.log(`Text updating: ${id} ${formatDate(date)}${editDate}`);
     if (!config.dryRun) await this.tg.editMessageText(this.digestMessage.raw, text);
     this.logger.log(`Text updated.`);
   }
