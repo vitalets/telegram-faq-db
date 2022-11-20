@@ -16,6 +16,8 @@ export class App {
     try {
       await this.tg.login();
       await new NoAnswer(this.tg).run();
+    } catch (e) {
+      this.logger.error(e);
     } finally {
       await this.tg.close();
       await this.uploadDb();
