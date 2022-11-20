@@ -8,6 +8,7 @@ import { noAnswerConfig } from './armenia.config.js';
 import { Tg } from '../telegram/TgClient.js';
 import { TgMessage } from '../telegram/TgMessage.js';
 import { isNoAnswerDigest, NoAnswerDigest } from './Digest.js';
+import { notifyError } from '../app.js';
 
 export class NoAnswerDigestList {
   protected logger = logger.withPrefix(`[${this.constructor.name}]:`);
@@ -33,7 +34,9 @@ export class NoAnswerDigestList {
       try {
         await digest.update();
       } catch (e) {
-        this.logger.error(e.message, digest.getInfoString());
+        e.message += digest.getInfoString();
+        this.logger.error(e);
+        notifyError(this.tg, e);
       }
     }
     this.logger.log(`Digest list updated.`);

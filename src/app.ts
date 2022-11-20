@@ -17,7 +17,7 @@ export class App {
       await this.tg.login();
       await new NoAnswer(this.tg).run();
     } catch (e) {
-      this.logger.error(e);
+      this.handleError(e);
     } finally {
       await this.tg.close();
       await this.uploadDb();
@@ -38,4 +38,14 @@ export class App {
       this.logger.log(`Db uploaded.`);
     }
   }
+
+  protected handleError(e: Error) {
+    this.logger.error(e);
+    notifyError(this.tg, e);
+  }
+}
+
+export function notifyError(tg: Tg, e: Error) {
+  tg.sendMessage(config.testChatId, e.message)
+    .catch(() => logger.error(e));
 }
