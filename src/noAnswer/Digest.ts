@@ -38,6 +38,10 @@ export class NoAnswerDigest {
   async post(chatId: number) {
     const text = this.buildText();
     this.logger.log(`Text built:\n${text}`);
+    if (!text) {
+      this.logger.log(`Text is empty. Skipping.`);
+      return;
+    }
     if (!config.dryRun) await this.tg.sendMessage(chatId, text);
     this.logger.log(`Text posted.`);
   }
@@ -45,6 +49,10 @@ export class NoAnswerDigest {
   async update() {
     if (!this.digestMessage) throw new Error(`Can't update digest`);
     const text = this.buildText();
+    if (!text) {
+      this.logger.log(`Text is empty. Skipping.`);
+      return;
+    }
     const { id, date, edit_date } = this.digestMessage.raw;
     const editDate = edit_date ? `, edited ${formatDate(edit_date)}` : '';
     this.logger.log(`Text updating: ${id} ${formatDate(date)}${editDate}`);
