@@ -1,4 +1,3 @@
-import timers from 'timers/promises';
 import { config } from '../config.js';
 import { logger } from '../helpers/logger.js';
 import { offsetMinutes, removeDuplicates, TimeRange } from '../helpers/utils.js';
@@ -24,8 +23,6 @@ export class NoAnswer {
   }
 
   async run() {
-    // tmp: wait to update last messages
-    await timers.setTimeout(5000);
     await this.updateAnswered();
     await this.postNewDigest();
   }
