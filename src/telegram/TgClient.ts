@@ -13,6 +13,7 @@ import { logger } from '../helpers/logger.js';
 import { config } from '../config.js';
 import { AuthCode } from './AuthCode.js';
 import { offsetMinutes } from '../helpers/utils.js';
+import { once } from 'node:events';
 
 const tdlibPath = process.platform === 'linux'
   ? getTdjson()
@@ -26,6 +27,7 @@ export class Tg {
   constructor() {
     this.client = this.createClient();
     this.client.on('update', update => this.onUpdate(update));
+    this.client.on('error', error => this.logger.error(error));
   }
 
   async login() {
@@ -44,10 +46,7 @@ export class Tg {
   async close() {
     await Promise.all([
       this.client.close(),
-      this.waitForEvent(u => {
-        return u._ === 'updateAuthorizationState'
-          && u.authorization_state._ === 'authorizationStateClosed';
-      }),
+      once(this.client, 'destroy'),
     ]);
   }
 
