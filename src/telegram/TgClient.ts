@@ -8,7 +8,6 @@
 import { Client } from 'tdl';
 import { TDLib } from 'tdl-tdlib-addon';
 import { getTdjson } from 'prebuilt-tdlib';
-import timers from 'timers/promises';
 import type { message, Update, updateMessageSendSucceeded } from 'tdlib-types';
 import { logger } from '../helpers/logger.js';
 import { config } from '../config.js';
@@ -54,15 +53,15 @@ export class Tg {
 
   // eslint-disable-next-line max-statements
   async loadMessages(chatId: number, since: number) {
-    // since can be relative
+    // since can be relative (in minutes)
     if (since <= 0) since = offsetMinutes(since);
 
     // open chat to load latest messages
-    await this.openChat(chatId);
+    // await this.openChat(chatId);
 
     // here delay is important to load latest messages
     // todo: better logic!
-    await timers.setTimeout(2000);
+    // await timers.setTimeout(2000);
 
     const totalMessages: message[] = [];
     let fromMessageId = 0;
