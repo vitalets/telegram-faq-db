@@ -86,7 +86,7 @@ export class NoAnswer {
   protected shouldSendDigest() {
     const lastDigestDate = this.digestList.getLastDigest()?.digestMessage?.raw.date || 0;
     const minutesSinceLastDigest = Math.round((Date.now() / 1000 - lastDigestDate) / 60);
-    if (minutesSinceLastDigest < noAnswerConfig.digestMinInterval) {
+    if (config.isProduction && minutesSinceLastDigest < noAnswerConfig.digestMinInterval) {
       this.logger.log(`Skip sending new digest (sent ${minutesSinceLastDigest}m ago)`);
       return false;
     } else {
