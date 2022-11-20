@@ -24,7 +24,7 @@ export class NoAnswer {
 
   async run() {
     await this.updateAnswered();
-    await this.postNewDigest();
+    await this.sendNewDigest();
   }
 
   protected async updateAnswered() {
@@ -32,7 +32,8 @@ export class NoAnswer {
     await this.digestList.updateAnswered();
   }
 
-  protected async postNewDigest() {
+  protected async sendNewDigest() {
+    if (!this.shouldSendDigest()) return;
     const messages = await this.loadNoAnswerMessages();
     const newMessages = this.extractNewMessages(messages);
     if (newMessages.length === 0) return;
@@ -80,5 +81,16 @@ export class NoAnswer {
       since: offsetMinutes(noAnswerConfig.noAnswerMessagesOffsetSince),
       to: offsetMinutes(noAnswerConfig.noAnswerMessagesOffsetTo),
     };
+  }
+
+  protected shouldSendDigest() {
+    const lastDigestDate = this.digestList.getLastDigest()?.digestMessage?.raw.date || 0;
+    const minutesSinceLastDigest = Math.round((Date.now() / 1000 - lastDigestDate) / 60);
+    if (minutesSinceLastDigest < noAnswerConfig.digestMinInterval) {
+      this.logger.log(`Skip sending new digest (sent ${minutesSinceLastDigest}m ago)`);
+      return false;
+    } else {
+      return true;
+    }
   }
 }

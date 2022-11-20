@@ -17,7 +17,7 @@ const questionAnswered = '✅ [~~{text}~~]({link})';
 export class NoAnswerDigest {
   protected logger = logger.withPrefix(`[${this.constructor.name}]:`);
   protected messages: TgMessage[] = [];
-  protected digestMessage?: TgMessage;
+  digestMessage?: TgMessage;
 
   constructor(protected tg: Tg) { }
 

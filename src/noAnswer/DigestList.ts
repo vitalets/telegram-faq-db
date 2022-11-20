@@ -45,4 +45,8 @@ export class NoAnswerDigestList {
   containsMessage(m: TgMessage) {
     return this.items.some(digest => digest.containsMessage(m));
   }
+
+  getLastDigest() {
+    return this.items[0];
+  }
 }

@@ -10,16 +10,19 @@ export type ChatConfig = {
 }
 
 export const noAnswerConfig = {
-  // time offset (minutes) to load no-answer messages
+  // Minutes low offset to load no-answer messages
   noAnswerMessagesOffsetSince: -2 * 60,
+  // Minutes high offset to load no-answer messages
   noAnswerMessagesOffsetTo: -1 * 60,
-  // chat to post digest
+  // Minimal interval in minutes to send digest
+  digestMinInterval: 60,
+  // Chat to send digest
   digestChatId: -1001875278358,
-  // max questions in digest
+  // Max questions in digest
   digestItemsMaxCount: 15,
-  // max question text length
+  // Max question text length
   digestItemMaxLength: 150,
-  // minutes offset for digests to update
+  // Minutes offset for digests to update
   digestUpdateOffsetSince: -6 * 60,
 };
 
