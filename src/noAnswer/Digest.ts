@@ -53,15 +53,20 @@ export class NoAnswerDigest {
       this.logger.log(`Text is empty. Skipping.`);
       return;
     }
-    const { id, date, edit_date } = this.digestMessage.raw;
-    const editDate = edit_date ? `, edited ${formatDate(edit_date)}` : '';
-    this.logger.log(`Text updating: ${id} ${formatDate(date)}${editDate}`);
+    this.logger.log(`Text updating: ${this.getInfoString()}`);
     if (!config.dryRun) await this.tg.editMessageText(this.digestMessage.raw, text);
     this.logger.log(`Text updated.`);
   }
 
   containsMessage(message: TgMessage) {
     return this.messages.some(m => m.id === message.id || m.text === message.text);
+  }
+
+  getInfoString() {
+    if (!this.digestMessage) return '';
+    const { id, date, edit_date } = this.digestMessage.raw;
+    const editDate = edit_date ? `, edited ${formatDate(edit_date)}` : '';
+    return `[${id}, created ${formatDate(date)}${editDate}]`;
   }
 
   protected buildText() {

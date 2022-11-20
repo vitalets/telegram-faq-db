@@ -30,7 +30,11 @@ export class NoAnswerDigestList {
 
   async updateAnswered() {
     for (const digest of this.items) {
-      await digest.update();
+      try {
+        await digest.update();
+      } catch (e) {
+        this.logger.error(e.message, digest.getInfoString());
+      }
     }
     this.logger.log(`Digest list updated.`);
   }
