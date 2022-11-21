@@ -36,3 +36,20 @@ function hasRussianLetters(text: string) {
   return /[а-яё]/i.test(text);
 }
 
+function isPoliteMessage(text: string) {
+  return /пожалуйста|здравствуйте|привет|добр(ый|ое)|спасибо/i.test(text);
+}
+
+function isStartedFromUpperCase(text: string) {
+  return /^[А-Я]/.test(text);
+}
+
+/**
+ * Calculate message weight to show polite messages first.
+ */
+export function getMessageWeight(m: TgMessage) {
+  let w = 0;
+  if (isPoliteMessage(m.text)) w +=2;
+  if (isStartedFromUpperCase(m.text)) w +=1;
+  return w;
+}

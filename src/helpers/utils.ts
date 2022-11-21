@@ -1,6 +1,8 @@
 /**
  * Utils
  */
+import fs from 'fs';
+
 export function cutStr(s: string, length: number) {
   return s.length > length ? `${s.slice(0, length)}...` : s;
 }
@@ -57,4 +59,10 @@ export function formatDate(timestamp: number | Date) {
     timeStyle: 'long',
     timeZone: 'Asia/Yerevan',
   }).format(date);
+}
+
+export function loadJson(relPath: string) {
+  // import.meta does not work in jest-esm
+  // see: https://github.com/kulshekhar/ts-jest/issues/1174
+  return JSON.parse(fs.readFileSync(relPath, 'utf8'));
 }

@@ -6,7 +6,7 @@ import { Tg } from '../telegram/TgClient.js';
 import { TgMessage } from '../telegram/TgMessage.js';
 import { NoAnswerDigest } from './Digest.js';
 import { NoAnswerDigestList } from './DigestList.js';
-import { isNoAnswerMessage } from './helpers.js';
+import { getMessageWeight, isNoAnswerMessage } from './helpers.js';
 
 export class NoAnswer {
   protected logger = logger.withPrefix(`[${this.constructor.name}]:`);
@@ -67,6 +67,7 @@ export class NoAnswer {
   protected extractNewMessages(messages: TgMessage[]) {
     const newMessages = removeDuplicates(messages, m => m.text)
       .filter(m => !this.isAlreadyPosted(m))
+      .sort((a, b) => getMessageWeight(a) - getMessageWeight(b))
       .slice(0, noAnswerConfig.digestItemsMaxCount);
     this.logger.log(`Total new no-answer messages: ${newMessages.length}`);
     return newMessages;
