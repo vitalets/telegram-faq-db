@@ -10,7 +10,8 @@ export function isNoAnswerMessage(m: TgMessage) {
     && isQuestion(m.text)
     && !hasLinks(m.entities)
     && !isOfferLS(m.text)
-    && hasRussianLetters(m.text);
+    && hasRussianLetters(m.text)
+    && !hasManySmiles(m.text);
 }
 
 function isQuestion(text: string) {
@@ -42,6 +43,10 @@ function isPoliteMessage(text: string) {
 
 function isStartedFromUpperCase(text: string) {
   return /^[А-Я]/.test(text);
+}
+
+function hasManySmiles(text: string) {
+  return /\){2,}/.test(text);
 }
 
 /**
