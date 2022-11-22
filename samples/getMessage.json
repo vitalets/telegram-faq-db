@@ -24,9 +24,23 @@
   "contains_unread_mention": false,
   "date": 1666939063,
   "edit_date": 0,
+  "interaction_info": {
+    "_": "messageInteractionInfo",
+    "view_count": 0,
+    "forward_count": 0,
+    "reply_info": {
+      "_": "messageReplyInfo",
+      "reply_count": 0,
+      "recent_replier_ids": [],
+      "last_read_inbox_message_id": 0,
+      "last_read_outbox_message_id": 0,
+      "last_message_id": 0
+    },
+    "reactions": []
+  },
   "unread_reactions": [],
   "reply_in_chat_id": -1001669191797,
-  "reply_to_message_id": 142682882048,
+  "reply_to_message_id": 0,
   "message_thread_id": 142682882048,
   "ttl": 0,
   "ttl_expires_in": 0,
